@@ -1,116 +1,307 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog Interactivo: América Colonial</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; }
-.navbar { background: #0d47a1 !important; }
-.hero {
-  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-  url('https://picsum.photos/1200/600?random=1') center/cover;
-  height: 70vh; color: white; display: flex; align-items: center; text-align: center;
-}
-.section-title { color: #0d47a1; border-bottom: 4px solid #0d47a1; margin: 40px 0; }
-img { border-radius: 10px; margin-top: 15px; }
-</style>
+&nbsp;&nbsp;&nbsp;&nbsp;<meta charset="UTF-8">
+&nbsp;&nbsp;&nbsp;&nbsp;<meta name="viewport" content="width=device-width, initial-scale=1.0">
+&nbsp;&nbsp;&nbsp;&nbsp;<title>Blog Interactivo: América Colonial – Versión Ultra Ampliada</title>
+&nbsp;&nbsp;&nbsp;&nbsp;<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+&nbsp;&nbsp;&nbsp;&nbsp;<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+&nbsp;&nbsp;&nbsp;&nbsp;<style>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #212529; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.navbar { background: #0d47a1 !important; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Spanish_Empire_%28c.1580%29.png/1280px-Spanish_Empire_%28c.1580%29.png') center/cover; height: 70vh; color: white; display: flex; align-items: center; text-align: center; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.section-title { color: #0d47a1; border-bottom: 5px solid #0d47a1; padding-bottom: 15px; margin: 60px 0 40px; font-weight: bold; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img.img-fluid { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 20px 0; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.timeline { position: relative; max-width: 1200px; margin: 40px auto; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.timeline::after { content: ''; position: absolute; width: 6px; background: #0d47a1; top: 0; bottom: 0; left: 50%; margin-left: -3px; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.container-timeline { padding: 10px 40px; position: relative; background: inherit; width: 50%; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.left { left: 0; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.right { left: 50%; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.content { padding: 25px 35px; background: white; position: relative; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.content::after { content: ''; position: absolute; top: 30px; width: 0; height: 0; border-style: solid; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.left .content::after { right: -15px; border-width: 15px 0 15px 15px; border-color: transparent transparent transparent white; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.right .content::after { left: -15px; border-width: 15px 15px 15px 0; border-color: transparent white transparent transparent; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.accordion-button { background: #e3f2fd; color: #0d47a1; font-weight: bold; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.quiz-container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+&nbsp;&nbsp;&nbsp;&nbsp;</style>
 </head>
-
 <body>
-
-<nav class="navbar navbar-dark">
-<div class="container">
-<a class="navbar-brand">🌎 América Colonial</a>
-</div>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-brand fw-bold fs-4" href="#">🌎 América Colonial – Historia Ultra Detallada</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="collapse navbar-collapse" id="navbarNav">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul class="navbar-nav ms-auto">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li class="nav-item"><a class="nav-link" href="#colonizacion">1. Colonización</a></li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li class="nav-item"><a class="nav-link" href="#reformas">2. Reformas Borbónicas</a></li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li class="nav-item"><a class="nav-link" href="#universidades">3. Universidades</a></li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li class="nav-item"><a class="nav-link" href="#castas">4. Sistema de Castas</a></li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li class="nav-item"><a class="nav-link" href="#sincretismo">5. Sincretismo Religioso</a></li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li class="nav-item"><a class="nav-link" href="#quiz">Quiz Ultra (15 preg)</a></li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
 </nav>
-
-<section class="hero">
-<div class="container">
-<h1>América Colonial</h1>
-<p>Blog educativo interactivo</p>
-</div>
+<section id="inicio" class="hero">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h1 class="display-3 fw-bold">América Colonial: Secciones 1-5 Ultra Ampliadas</h1>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="lead fs-4 mt-4">Detalles profundos, timelines, ejemplos históricos y quiz con 15 preguntas + explicaciones</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#reformas" class="btn btn-light btn-lg mt-4 px-5">¡Explorar ahora!</a>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
 </section>
-
-<!-- COLONIZACIÓN -->
-<section class="container py-5">
-<h2 class="section-title">Colonización</h2>
-
-<div class="row">
-<div class="col-md-6">
-<img src="https://picsum.photos/600/400?random=2" class="img-fluid">
-</div>
-
-<div class="col-md-6">
-<img src="https://picsum.photos/600/400?random=3" class="img-fluid">
-</div>
-</div>
-
-<p class="mt-4">
-La colonización comenzó en 1492 con la llegada de Cristóbal Colón. España buscaba nuevas rutas comerciales y riquezas.
-</p>
+<!-- SECCIÓN 1 COMPLETA (agregada sin eliminar nada del resto) -->
+<section id="colonizacion" class="py-5 bg-white">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="section-title text-center">1. ¿Cómo y por qué empezó la colonización española?</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="row">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-6">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Landing_of_Columbus_by_John_Vanderlyn.jpg/800px-Landing_of_Columbus_by_John_Vanderlyn.jpg" class="img-fluid" alt="Desembarco de Colón en 1492">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="text-center text-muted mt-2">Desembarco de Cristóbal Colón (pintura histórica de John Vanderlyn, 1846)</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-6">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Christoper_Columbus_statue_in_Central_Park.jpg/600px-Christoper_Columbus_statue_in_Central_Park.jpg" class="img-fluid" alt="Estatua de Colón">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="text-center text-muted mt-2">Monumento a Cristóbal Colón</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="lead mt-4">El 12 de octubre de 1492, Cristóbal Colón llegó a una isla del Caribe (actual San Salvador, Bahamas) patrocinado por los Reyes Católicos Isabel y Fernando. No buscaba un nuevo continente, sino una ruta occidental hacia Asia para el comercio de especias, seda y porcelana, evitando el control otomano del Mediterráneo y la ruta africana portuguesa.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Causas principales detalladas:</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Económicas</strong>: Oro, plata, especias y materias primas para enriquecer España tras la Reconquista (1492) y la crisis financiera de la corona. España necesitaba nuevas fuentes de riqueza para competir con Portugal y financiar guerras.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Religiosas</strong>: Expandir el cristianismo católico (cruzada contra el islam tras toma de Granada en 1492), evangelizar nuevos pueblos y cumplir el mandato papal de propagar la fe (bulas papales de Alejandro VI).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Políticas y estratégicas</strong>: Competir con Portugal (que dominaba la ruta africana desde 1488 con Bartolomé Dias), ganar prestigio imperial, asegurar rutas comerciales seguras y expandir el poder de la Corona en un mundo multipolar.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Técnicas y científicas</strong>: Avances en navegación (carabela, brújula perfeccionada, astrolabio, cartas náuticas de Toscanelli) y conocimiento de la esfericidad de la Tierra (aunque Colón subestimó la distancia al Asia en ~25.000 km).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Ideológicas</strong>: Influencia de textos clásicos (Marco Polo, Ptolomeo) y el deseo de encontrar el "Gran Khan" y reinos cristianos en Asia para alianzas contra el islam.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Consecuencias inmediatas y a largo plazo:</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Intercambio colombino</strong>: Traslado bidireccional de plantas (maíz, papa, tomate, cacao, tabaco, frijol a Europa; trigo, arroz, caña azúcar, café, cítricos, caballos, vacas, cerdos, gallinas a América), animales y enfermedades (viruela, sarampión, gripe, tifus mataron hasta 90% de población indígena en algunas regiones en 150 años).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Disminución drástica población indígena (de ~50-100 millones estimados en 1492 a ~5-10 millones en 1650 por epidemias, guerras, encomienda, mita y esclavitud).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Mestizaje cultural y racial masivo, creación de sociedades jerárquicas basadas en origen (peninsulares, criollos, mestizos, indígenas, africanos y castas).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Creación del mayor imperio colonial de la historia hasta entonces, con virreinatos (Nueva España 1535, Perú 1542, Nueva Granada 1717, Río de la Plata 1776) y audiencias para administración.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Tratado de Tordesillas (1494): división del mundo entre España y Portugal por línea a 370 leguas oeste de Cabo Verde → España obtuvo casi toda América (excepto Brasil), con ajustes posteriores en Zaragoza (1529).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Inicio de la explotación minera (Potosí, Zacatecas) y plantaciones (azúcar, tabaco, algodón) con mano de obra indígena y africana esclavizada.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Debate ético temprano: Bartolomé de las Casas (1550) vs Juan Ginés de Sepúlveda sobre si los indígenas tenían alma y derechos humanos.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion mt-4">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#colExtra1">¿Por qué Colón pensó que llegó a Asia?</button></h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="colExtra1" class="accordion-collapse collapse"><div class="accordion-body">Calculó la circunferencia terrestre más pequeña (siguiendo a Toscanelli) y no conocía el Pacífico ni América. Creyó hasta su muerte que había llegado a las Indias Orientales (Cuba = Cipango, Haití = Quinsay).</div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#colExtra2">Reflexión</button></h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="colExtra2" class="accordion-collapse collapse"><div class="accordion-body">¿El descubrimiento fue un avance o un desastre demográfico y cultural para América? El debate sigue abierto entre historiadores: progreso global vs genocidio y destrucción cultural.</div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#colExtra3">Curiosidad adicional</button></h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="colExtra3" class="accordion-collapse collapse"><div class="accordion-body">Colón realizó 4 viajes (1492-1504) y nunca aceptó que había descubierto un nuevo continente; hasta su muerte creyó que era Asia oriental.</div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
 </section>
-
-<!-- REFORMAS -->
-<section class="container py-5">
-<h2 class="section-title">Reformas Borbónicas</h2>
-
-<div class="row">
-<div class="col-md-4"><img src="https://picsum.photos/400/300?random=4" class="img-fluid"></div>
-<div class="col-md-4"><img src="https://picsum.photos/400/300?random=5" class="img-fluid"></div>
-<div class="col-md-4"><img src="https://picsum.photos/400/300?random=6" class="img-fluid"></div>
-</div>
-
-<p class="mt-4">
-Fueron cambios administrativos en el siglo XVIII para mejorar la economía del imperio español.
-</p>
+<!-- SECCIÓN 2 (sin cambios) -->
+<section id="reformas" class="py-5 bg-light">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="section-title text-center">2. Las Reformas Borbónicas (siglo XVIII): Modernización, control y descontento</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="row">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Charles_III_of_Spain_by_Anton_Raphael_Mengs.jpg/600px-Charles_III_of_Spain_by_Anton_Raphael_Mengs.jpg" class="img-fluid" alt="Carlos III impulsor principal"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Expulsi%C3%B3n_de_los_jesuitas.jpg/600px-Expulsi%C3%B3n_de_los_jesuitas.jpg" class="img-fluid" alt="Expulsión jesuitas 1767"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Intendencias_Nueva_Espa%C3%B1a.svg/600px-Intendencias_Nueva_Espa%C3%B1a.svg.png" class="img-fluid" alt="Mapa intendencias Nueva España"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="lead mt-4">Impulsadas por la dinastía Borbón (Felipe V, Fernando VI, Carlos III) tras la crisis de la Guerra de Siete Años (1756-1763), donde España perdió territorios (Manila, La Habana temporalmente). Objetivo: centralizar poder, aumentar ingresos fiscales y modernizar el imperio para competir con Inglaterra y Francia.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Causas profundas:</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Crisis económica española post-guerras europeas y pérdida de monopolio comercial.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Contrabando masivo en el Caribe y debilidad administrativa (corregidores corruptos).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Ideas ilustradas: absolutismo monárquico, eficiencia estatal (ministro José de Gálvez clave en visitas).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Amenaza británica y portuguesa en fronteras americanas.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Medidas principales (detalladas):</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Administrativas</strong>: Creación de intendencias (1760s-1780s) → 12 en Nueva España, virreyes más controlados, fin de venta de cargos.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Económicas</strong>: Reglamento de Libre Comercio (1778) → más puertos abiertos (de 1 a 13), fin monopolio Cádiz; estancos (tabaco, aguardiente); aumento alcabalas e impuestos indígenas.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Religiosas</strong>: Expulsión jesuitas (1767) → 2.500 de América, confiscación bienes, control misiones y educación.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Militares</strong>: Milicias disciplinadas, fortificaciones (La Habana, Cartagena), ejército permanente.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Consecuencias y rebeliones:</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Crecimiento económico temporal (Cuba, Venezuela exportaciones).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Descontento criollo (discriminación peninsular), indígenas (tributos altos), mestizos.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Rebeliones: Túpac Amaru II (Perú 1780-1781, mayor indígena), Comuneros (Nueva Granada 1781), Tupac Katari (Alto Perú 1781).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Detonante independencia: criollos perdieron privilegios, pero aumentó conciencia anti-española.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5 class="mt-5">Timeline Reformas Borbónicas</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="timeline">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="container-timeline left"><div class="content"><h6>1759</h6><p>Sube Carlos III al trono</p></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="container-timeline right"><div class="content"><h6>1767</h6><p>Expulsión jesuitas</p></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="container-timeline left"><div class="content"><h6>1776-1778</h6><p>Intendencias y Reglamento Libre Comercio</p></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="container-timeline right"><div class="content"><h6>1780-1781</h6><p>Rebelión Túpac Amaru II</p></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion mt-5">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#refExtra1">Dato clave: José de Gálvez</button></h2><div id="refExtra1" class="accordion-collapse collapse"><div class="accordion-body">Visitador general (1765-1771): reorganizó hacienda, expulsó jesuitas, creó intendencias.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#refExtra2">Reflexión</button></h2><div id="refExtra2" class="accordion-collapse collapse"><div class="accordion-body">¿Fueron las reformas modernizadoras o solo explotadoras? Generaron riqueza pero también independencia.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
 </section>
-
-<!-- UNIVERSIDADES -->
-<section class="container py-5">
-<h2 class="section-title">Universidades</h2>
-
-<div class="row">
-<div class="col-md-6"><img src="https://picsum.photos/600/400?random=7" class="img-fluid"></div>
-<div class="col-md-6"><img src="https://picsum.photos/600/400?random=8" class="img-fluid"></div>
-</div>
-
-<p class="mt-4">
-Las universidades formaban a la élite colonial en áreas como teología y derecho.
-</p>
+<!-- SECCIÓN 3 AMPLIADA -->
+<section id="universidades" class="py-5 bg-white">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="section-title text-center">3. Universidades en la Época Colonial: Educación para la élite</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="row">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-6"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Universidad_de_San_Marcos_Lima.jpg/800px-Universidad_de_San_Marcos_Lima.jpg" class="img-fluid" alt="Universidad San Marcos Lima"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-6"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/UNAM_Ciudad_Universitaria.jpg/800px-UNAM_Ciudad_Universitaria.jpg" class="img-fluid" alt="UNAM México antigua"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="lead mt-4">España fundó ~32 universidades entre 1538-1812. Modelos: Salamanca (estudiantes) y Alcalá (convento-universidad). Enseñanza en latín: teología, derecho canónico/civil, medicina, artes. Acceso elitista: criollos, peninsulares, excepcionalmente indígenas nobles.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p>Las universidades coloniales fueron instituciones clave para la reproducción de la cultura española en América, pero también espacios donde surgieron tensiones y pensamiento crítico. La enseñanza era predominantemente escolástica (tomista y aristotélica) hasta el siglo XVIII, cuando las reformas borbónicas introdujeron ciencias experimentales (física newtoniana, matemáticas, botánica, anatomía) y textos ilustrados (Rousseau, Montesquieu, Locke) llegaron de contrabando o mediante bibliotecas privadas de criollos ilustrados. Muchas universidades tenían colegios anexos para indígenas nobles (como Santa Cruz de Tlatelolco en México, fundado por fray Juan de Zumárraga en 1536), pero eran excepciones y a menudo cerraron por falta de apoyo o financiamiento insuficiente.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Lista de principales (aún activas muchas):</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ol>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1538: Universidad Santo Tomás de Aquino (Santo Domingo) – primera bula papal Pablo III, modelo medieval, centro teológico caribeño y primer centro de estudios superiores en el Nuevo Mundo.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1551: Real y Pontificia Universidad de San Marcos (Lima) – "Decana de América", funcionamiento continuo más largo, formó élite andina y rebeldes como Túpac Amaru, con facultades de teología, derecho y medicina desde temprano.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1551: Real y Pontificia Universidad de México → hoy UNAM, primer centro de estudios médicos y jurídicos en continente, sede de debates teológicos sobre derechos indígenas (Las Casas vs Sepúlveda en Valladolid 1550 influyó indirectamente).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1624: Universidad Mayor Real y Pontificia San Francisco Xavier de Chuquisaca (Bolivia) – foco de ideas ilustradas y precursoras independencia (influencia en grito de Chuquisaca 1809 y en figuras como Jaime Zudañez).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1613: Universidad Nacional de Córdoba (Argentina) – jesuítica hasta 1767, luego borbónica, formó intelectuales rioplatenses y fue centro de estudios teológicos y filosóficos.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1676: Universidad de San Carlos (Guatemala) – centro teológico y jurídico centroamericano, clave en formación clero secular y juristas locales.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1728: Universidad de La Habana (Cuba) – impulsada por auge azúcar y tabaco, formó élite caribeña y criollos reformistas.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1721: Universidad Central de Venezuela (Caracas) – clave en independencia venezolana (Bolívar estudió aquí influencias ilustradas).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>1787: Real Universidad de Santo Tomás de Aquino (Quito) – tardía pero influyente en Andes norteños, con fuerte tradición jesuítica hasta expulsión.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ol>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Impacto:</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Formaron élite criolla → líderes independencia (Bolívar leyó Rousseau y Montesquieu en San Carlos Caracas, Hidalgo y Morelos en México estudiaron teología y derecho canónico, San Martín influido por Córdoba, Miranda formó ideas en Caracas).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Evangelización y control cultural (jesuitas enseñaban hasta 1767; después clero secular y órdenes mendicantes dominaron, introduciendo más ciencias modernas y menos dogmatismo).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Reformas borbónicas: secularización parcial, introducción ciencias naturales, expulsión jesuitas debilitó muchas instituciones pero abrió paso a pensamiento moderno y crítico, con cátedras de física y matemáticas.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Exclusión social: mujeres prohibidas formalmente (excepto casos excepcionales como Sor Juana Inés de la Cruz, quien estudió autodidacta y criticó exclusión femenina en su "Respuesta a Sor Filotea"), indígenas y castas bajas casi excluidos salvo becas reales limitadas o colegios especiales (Santa Cruz de Tlatelolco para nobles indígenas).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Producción intelectual: muchas universidades publicaron tratados teológicos, jurídicos y científicos (ej. tesis sobre derecho natural y derechos indígenas en siglo XVII).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion mt-4">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#uniExtra">¿Por qué tan tempranas fundaciones?</button></h2><div id="uniExtra" class="accordion-collapse collapse"><div class="accordion-body">Evangelizar, formar funcionarios locales, replicar modelo español en "nuevos reinos".</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#uniExtra2">Curiosidad adicional</button></h2><div id="uniExtra2" class="accordion-collapse collapse"><div class="accordion-body">San Marcos (Lima) es la única universidad colonial que nunca cerró sus puertas en más de 470 años, incluso durante guerras de independencia y terremotos.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#uniExtra3">¿Sabías esto?</button></h2><div id="uniExtra3" class="accordion-collapse collapse"><div class="accordion-body">Muchas universidades tenían "colegios mayores" para pobres o indígenas nobles, pero la discriminación racial persistía: solo peninsulares y criollos accedían a cátedras importantes y grados superiores.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
 </section>
-
-<!-- CASTAS -->
-<section class="container py-5">
-<h2 class="section-title">Sistema de Castas</h2>
-
-<div class="row">
-<div class="col-md-4"><img src="https://picsum.photos/400/300?random=9" class="img-fluid"></div>
-<div class="col-md-4"><img src="https://picsum.photos/400/300?random=10" class="img-fluid"></div>
-<div class="col-md-4"><img src="https://picsum.photos/400/300?random=11" class="img-fluid"></div>
-</div>
-
-<p class="mt-4">
-Organizaba la sociedad según el origen racial y determinaba privilegios.
-</p>
+<section id="castas" class="py-5 bg-light">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="section-title text-center">4. El Sistema de Castas: Jerarquía racial y social</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="row">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/De_espa%C3%B1ol_y_negra_nace_mulata.jpg/600px-De_espa%C3%B1ol_y_negra_nace_mulata.jpg" class="img-fluid" alt="De español y negra nace mulata"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/De_espa%C3%B1ol_e_india_sale_mestizo.jpg/600px-De_espa%C3%B1ol_e_india_sale_mestizo.jpg" class="img-fluid" alt="De español e india sale mestizo"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-4"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/De_mulato_y_espa%C3%B1ola_sale_morisco.jpg/600px-De_mulato_y_espa%C3%B1ola_sale_morisco.jpg" class="img-fluid" alt="De mulato y española sale morisco"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="lead mt-4">Sistema estratificado (siglos XVI-XVIII) basado en "limpieza de sangre". No era ley formal, pero regulaba privilegios, impuestos, oficios, matrimonios. Pinturas de castas (siglo XVIII, Miguel Cabrera famoso) mostraban 16-53 mezclas como propaganda de "orden social".</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p>El concepto de "limpieza de sangre" (pureza cristiana sin mezcla judía, mora o hereje) se importó de España (Estatutos de Limpieza 1449-1610) y se adaptó en América para justificar dominación española sobre indígenas y africanos. En la práctica, el sistema era más fluido de lo que las pinturas muestran: muchas personas "ascendían" mediante matrimonio estratégico, compra de "gracias al sacar" (certificados de blancura desde 1795), servicio militar o riqueza económica. Las pinturas de castas eran propaganda para mostrar orden y estabilidad social a la Corona y a Europa, y servían como guía visual para administradores y visitantes.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Jerarquía principal:</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ol>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Peninsulares (españoles nacidos en España) → cima poder, monopolio cargos altos, comercio privilegiado y títulos nobiliarios.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Criollos (españoles nacidos América) → élite económica pero discriminados en altos cargos, resentimiento creciente que alimentó independencia.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Castizos (3/4 español) → casi "blancos", acceso parcial a educación y oficios, a veces se "blanqueaban" legalmente mediante "gracias al sacar".</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Mestizos (español + indígena) → grupo más numeroso en siglo XVIII, oficios artesanales, militares bajos, peones agrícolas, a menudo en ciudades como artesanos o comerciantes menores.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Mulatos (español + africano) → libres o esclavos, artesanos urbanos, sirvientes, soldados en milicias, con mayor presencia en zonas costeras y plantaciones.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Zambos (indígena + africano) → marginados, peones rurales, cimarrones o trabajadores forzados, con mayor presencia en regiones tropicales y fronterizas.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Indígenas y negros africanos (esclavos o tributarios) → base, tributos personales, trabajo forzado (mita andina, repartimiento, esclavitud minera y plantaciones), con derechos limitados a tierras comunales (repúblicas de indios).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ol>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p>Otras castas comunes: coyote (mestizo + india), lobo (zambo + india), tente en el aire (mezclas complejas), no te entiendo (mezclas indefinidas), albarazado (castizo + mulata), jarocho (mulato + india en Veracruz), chino (mulato + india), etc. En regiones variaban: Caribe más mulato/zambo, Andes más indígena/mestizo, México central más mestizo/castizo, Brasil y Caribe con fuerte influencia africana.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion mt-4">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#castExtra">Función pinturas castas</button></h2><div id="castExtra" class="accordion-collapse collapse"><div class="accordion-body">Propaganda: mostrar orden, justificar desigualdad, exportar a España imagen "exótica" América.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#castExtra2">Dato adicional</button></h2><div id="castExtra2" class="accordion-collapse collapse"><div class="accordion-body">Desde 1795 la Corona vendió "gracias al sacar" (certificados de blancura, legitimidad, cambio de oficio) por dinero, mostrando la flexibilidad real del sistema y la posibilidad de movilidad social limitada.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#castExtra3">¿Sabías esto?</button></h2><div id="castExtra3" class="accordion-collapse collapse"><div class="accordion-body">En el siglo XVIII se crearon más de 100 series de pinturas de castas, muchas enviadas a España como "catálogo" de la diversidad americana para justificar el orden colonial y mostrar control social.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
 </section>
-
-<!-- SINCRETISMO -->
-<section class="container py-5">
-<h2 class="section-title">Sincretismo Religioso</h2>
-
-<div class="row">
-<div class="col-md-6"><img src="https://picsum.photos/600/400?random=12" class="img-fluid"></div>
-<div class="col-md-6"><img src="https://picsum.photos/600/400?random=13" class="img-fluid"></div>
-</div>
-
-<p class="mt-4">
-Fusión entre creencias indígenas y religión católica.
-</p>
+<section id="sincretismo" class="py-5 bg-white">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="section-title text-center">5. Sincretismo Religioso: Fusión creencias indígenas + catolicismo</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="row">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-6"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/La_Virgen_de_Guadalupe_%28original%29.jpg/600px-La_Virgen_de_Guadalupe_%28original%29.jpg" class="img-fluid" alt="Virgen Guadalupe 1531"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-md-6"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/D%C3%ADa_de_Muertos_en_M%C3%A9xico.jpg/600px-D%C3%ADa_de_Muertos_en_M%C3%A9xico.jpg" class="img-fluid" alt="Ofrenda Día Muertos"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p class="lead mt-4">Proceso resistencia cultural: indígenas adaptaron catolicismo impuesto fusionando dioses prehispánicos. Facilitó conversión masiva pero preservó tradiciones.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p>La Iglesia católica permitió sincretismo estratégico para evitar resistencia abierta (política de "reducciones" y evangelización por imágenes y fiestas). Los indígenas reinterpretaron santos como equivalentes de sus deidades: la Virgen María sustituyó diosas madres (Tonantzin, Pachamama, Coatlicue), santos patronos reemplazaron huacas y dioses locales (Illapa como Santiago Matamoros, Inti como San Juan Bautista en algunas regiones). Esto permitió supervivencia cultural encubierta durante siglos y sigue vivo en prácticas actuales, como en el culto andino a la Pachamama junto a la Virgen o en la santería cubana.</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h5>Ejemplos principales:</h5>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Virgen de Guadalupe (México 1531)</strong>: Apareció a Juan Diego en Tepeyac (sitio sagrado Tonantzin/Cihuacoatl diosa madre azteca). Imagen con piel morena, rasgos indígenas, manto estelar nahua, estrellas constelación azteca → símbolo máximo mestizo y resistencia, patrona América Latina desde 1945, con milagros documentados y devoción masiva.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Día de Muertos</strong>: Sincretismo Día Todos los Santos y Fieles Difuntos (católico) + Mictecacihuatl y Mictlantecuhtli prehispánicos. Ofrendas (pan muerto, cempasúchil, calaveras azúcar, incienso copal, comida favorita difuntos), altares familiares con fotos, velas y arco de flores, visitas a cementerios con música y comida.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Virgen de Copacabana (Bolivia 1583)</strong>: Imagen sobre isla sagrada Pachamama (madre tierra andina), fiesta 2 agosto con danzas aymara/quechua, ofrendas coca, chicha y animales, peregrinación desde La Paz con música y vestimentas tradicionales.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li><strong>Señor de los Milagros (Perú 1651)</strong>: Pintura mural escapó terremotos Lima, procesión anual con incienso, música andina, velas y promesas prehispánicas, miles de fieles con túnicas moradas y penitencia.</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<li>Otros: Virgen de Chiquinquirá (Colombia, sobre diosa muisca Bachué), Virgen de Luján (Argentina, patrona gaucha con fusión criolla), Virgen del Cisne (Ecuador, fusión inca), sincretismo caribeño (santería cubana con orishas yoruba y santos católicos), Virgen de la Caridad del Cobre (Cuba, sincretismo yoruba con Ochún), Virgen de Caacupé (Paraguay, fusión guaraní).</li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ul>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion mt-4">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#sincExtra">¿Por qué funcionó?</button></h2><div id="sincExtra" class="accordion-collapse collapse"><div class="accordion-body">Iglesia permitió fusiones para conversión; indígenas resistieron culturalmente disfrazando dioses.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#sincExtra2">Dato adicional</button></h2><div id="sincExtra2" class="accordion-collapse collapse"><div class="accordion-body">El sincretismo sigue vivo hoy: en Andes Pachamama se honra junto a Virgen María en fiestas, en México Guadalupe es símbolo nacional más allá de lo religioso, en Cuba santería combina yoruba y catolicismo abiertamente.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#sincExtra3">Curiosidad</button></h2><div id="sincExtra3" class="accordion-collapse collapse"><div class="accordion-body">En muchas fiestas coloniales, los indígenas disfrazaban danzas prehispánicas como "danzas de moros y cristianos" para mantener tradiciones ancestrales bajo apariencia católica, una forma de resistencia cultural encubierta.</div></div></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
 </section>
-
+<section id="quiz" class="py-5 bg-light">
+&nbsp;&nbsp;&nbsp;&nbsp;<div class="container">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h2 class="section-title text-center">Quiz Ultra: 15 Preguntas con Explicaciones</h2>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="quiz-container mx-auto">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="pregunta" class="h4 mb-4 fw-bold"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="opciones" class="d-grid gap-3"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="feedback" class="mt-4 alert" style="display:none;"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="siguiente" class="btn btn-primary mt-3" style="display:none;">Siguiente</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="reiniciar" class="btn btn-secondary mt-3" style="display:none;">Reiniciar</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div id="scoreFinal" class="mt-4 fs-4 text-center" style="display:none;"></div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;</div>
+</section>
+<footer class="text-center py-5 bg-dark text-white">
+&nbsp;&nbsp;&nbsp;&nbsp;<p>Blog ultra educativo – América Colonial | Actualizado Marzo 2026 | Para Anderson en Quito</p>
+</footer>
+<script>
+&nbsp;&nbsp;&nbsp;&nbsp;document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); document.querySelector(a.getAttribute('href')).scrollIntoView({behavior: 'smooth'}); }));
+&nbsp;&nbsp;&nbsp;&nbsp;const quizData = [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Principal rey Reformas Borbónicas?", o: ["Felipe V", "Carlos III", "Fernando VII", "Carlos II"], r: 1, expl: "Carlos III (1759-1788) impulsó modernización." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Año expulsión jesuitas?", o: ["1759", "1767", "1780", "1778"], r: 1, expl: "1767: control educación y misiones." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Rebelión indígena mayor por reformas?", o: ["Comuneros", "Túpac Amaru II", "Tupac Katari", "Todas"], r: 1, expl: "Túpac Amaru II (1780-1781 Perú)." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Reglamento Libre Comercio año?", o: ["1767", "1778", "1780", "1759"], r: 1, expl: "1778: abrió más puertos." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Primera universidad América bula papal?", o: ["San Marcos", "Santo Domingo 1538", "UNAM", "Córdoba"], r: 1, expl: "Santo Tomás Aquino 1538." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Universidad decana funcionamiento continuo?", o: ["Santo Domingo", "San Marcos Lima 1551", "UNAM", "Chuquisaca"], r: 1, expl: "San Marcos aún activa sin interrupción." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Universidad fundada 1728?", o: ["Córdoba", "La Habana", "San Carlos", "Chuquisaca"], r: 1, expl: "Universidad La Habana Cuba." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Cima jerarquía castas?", o: ["Criollos", "Peninsulares", "Mestizos", "Mulatos"], r: 1, expl: "Peninsulares nacidos España." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Pintor famoso series castas?", o: ["Velázquez", "Miguel Cabrera", "Goya", "Murillo"], r: 1, expl: "Miguel Cabrera siglo XVIII." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Casta 'de español e india'?", o: ["Mulato", "Mestizo", "Castizo", "Zambo"], r: 1, expl: "Mestizo." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Sincretismo Virgen Guadalupe sitio?", o: ["Tepeyac", "Teotihuacán", "Chichén Itzá", "Cusco"], r: 0, expl: "Tepeyac = Tonantzin azteca." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Día Muertos mezcla?", o: ["Solo prehispánico", "Todos Santos + honras indígenas", "Solo católico", "Halloween"], r: 1, expl: "Sincretismo perfecto." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Virgen sincretismo andina?", o: ["Guadalupe", "Copacabana Pachamama", "Fátima", "Lourdes"], r: 1, expl: "Copacabana sobre Pachamama." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Objetivo principal reformas?", o: ["Independencia", "Aumentar ingresos Corona", "Democracia", "Igualdad"], r: 1, expl: "Centralizar y recaudar más." },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ q: "Impacto universidades independencia?", o: ["Ninguno", "Formaron líderes criollos", "Solo teología", "Cerraron"], r: 1, expl: "Criollos educados cuestionaron discriminación." }
+&nbsp;&nbsp;&nbsp;&nbsp;];
+&nbsp;&nbsp;&nbsp;&nbsp;let current = 0, score = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;function loadQ() {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (current >= quizData.length) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('pregunta').style.display = 'none';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('opciones').style.display = 'none';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('siguiente').style.display = 'none';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('scoreFinal').innerHTML = `¡Completado!<br>Puntuación: ${score}/${quizData.length}<br>${score >= 12 ? '¡Eres experto en colonial!' : score >= 8 ? 'Muy bien' : '¡Sigue aprendiendo!'}`;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('scoreFinal').style.display = 'block';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('reiniciar').style.display = 'block';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const q = quizData[current];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('pregunta').textContent = `${current+1}. ${q.q}`;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const ops = document.getElementById('opciones');
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ops.innerHTML = '';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q.o.forEach((opt, i) => {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const btn = document.createElement('button');
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.className = 'btn btn-outline-primary w-100 text-start py-3';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.textContent = opt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.onclick = () => {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Array.from(ops.children).forEach(b => b.disabled = true);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i === q.r) { score++; btn.classList.add('btn-success'); } else { btn.classList.add('btn-danger'); }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('feedback').textContent = q.expl;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('feedback').className = `mt-4 alert ${i === q.r ? 'alert-success' : 'alert-danger'}`;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('feedback').style.display = 'block';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('siguiente').style.display = 'block';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ops.appendChild(btn);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('siguiente').style.display = 'none';
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('feedback').style.display = 'none';
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('siguiente').onclick = () => { current++; loadQ(); };
+&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('reiniciar').onclick = () => { current = 0; score = 0; document.getElementById('reiniciar').style.display = 'none'; document.getElementById('scoreFinal').style.display = 'none'; document.getElementById('pregunta').style.display = 'block'; document.getElementById('opciones').style.display = 'grid'; loadQ(); };
+&nbsp;&nbsp;&nbsp;&nbsp;loadQ();
+</script>
 </body>
 </html>
