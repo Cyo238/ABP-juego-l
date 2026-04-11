@@ -195,21 +195,42 @@ window.addEventListener("keyup",e=>{
   if(e.code==="ArrowLeft") keys["left"]=false;
 });
 
-// móvil
+// móvil (MEJORADO)
 function bindBtn(id, key){
   let btn = document.getElementById(id);
-  btn.addEventListener("touchstart",()=> keys[key]=true);
-  btn.addEventListener("touchend",()=> keys[key]=false);
+
+  btn.addEventListener("touchstart",(e)=>{
+    e.preventDefault();
+    keys[key]=true;
+  }, {passive:false});
+
+  btn.addEventListener("touchend",(e)=>{
+    e.preventDefault();
+    keys[key]=false;
+  }, {passive:false});
+
+  // también soporte click por si acaso
+  btn.addEventListener("mousedown",()=> keys[key]=true);
+  btn.addEventListener("mouseup",()=> keys[key]=false);
 }
 
 bindBtn("left","left");
 bindBtn("right","right");
 
-document.getElementById("jump").addEventListener("touchstart",()=>{
+let jumpBtn = document.getElementById("jump");
+
+jumpBtn.addEventListener("touchstart",(e)=>{
+  e.preventDefault();
+  if(!player.jumping) player.dy=-12;
+}, {passive:false});
+
+jumpBtn.addEventListener("mousedown",()=>{
   if(!player.jumping) player.dy=-12;
 });
+
+// evitar scroll en móvil
+window.addEventListener("touchmove", e => e.preventDefault(), { passive:false });
 
 loop();
 </script></body>
 </html>
-
