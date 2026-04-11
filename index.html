@@ -2,10 +2,41 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Stickman Parkour Fluido</title>
+  <title>Stickman Parkour con Progreso</title>
   <style>
     body { margin:0; overflow:hidden; background:#111; font-family:Arial; }
     canvas { display:block; }
+
+    /* BARRA DE PROGRESO */
+    #progressContainer {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ff99, #00ccff);
+      transition: width 0.2s;
+    }
+
+    #progressText {
+      position: fixed;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+      opacity: 0.8;
+    }
 
     #ui {
       position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
@@ -24,7 +55,14 @@
   </style>
 </head>
 <body>
+
+<div id="progressContainer">
+  <div id="progressBar"></div>
+</div>
+<div id="progressText">0%</div>
+
 <canvas id="game"></canvas>
+
 <div id="ui">
   <h1 id="endText">💀 GAME OVER 💀</h1>
   <button onclick="restart()">🔁 Reiniciar</button>
@@ -50,7 +88,7 @@ let player = {
   height: 50,
   dx: 0,
   dy: 0,
-  speed: 0.5, // aceleración
+  speed: 0.5,
   maxSpeed: 6,
   friction: 0.85,
   jumping: false,
@@ -79,6 +117,14 @@ function generateWorld() {
 generateWorld();
 player.y = platforms[0].y - player.height;
 
+function updateProgress() {
+  let progress = Math.min(player.x / finishX, 1);
+  let percent = Math.floor(progress * 100);
+
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressText").innerText = percent + "% completado";
+}
+
 function drawStickman(p) {
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2;
@@ -88,18 +134,15 @@ function drawStickman(p) {
 
   let px = p.x - cameraX;
 
-  // cabeza
   ctx.beginPath();
   ctx.arc(px + 10, p.y - 10, 10, 0, Math.PI * 2);
   ctx.stroke();
 
-  // cuerpo
   ctx.beginPath();
   ctx.moveTo(px + 10, p.y);
   ctx.lineTo(px + 10, p.y + 25);
   ctx.stroke();
 
-  // brazos
   ctx.beginPath();
   ctx.moveTo(px + 10, p.y + 10);
   ctx.lineTo(px - 5 + swing, p.y + 20);
@@ -107,7 +150,6 @@ function drawStickman(p) {
   ctx.lineTo(px + 25 - swing, p.y + 20);
   ctx.stroke();
 
-  // piernas
   ctx.beginPath();
   ctx.moveTo(px + 10, p.y + 25);
   ctx.lineTo(px - 5 - swing, p.y + 45);
@@ -115,7 +157,6 @@ function drawStickman(p) {
   ctx.lineTo(px + 25 + swing, p.y + 45);
   ctx.stroke();
 
-  // nombre
   ctx.fillStyle = "white";
   ctx.fillText("pinto vrg", px - 20, p.y - 30);
 }
@@ -125,23 +166,15 @@ function update() {
 
   player.frame++;
 
-  // aceleración progresiva
-  if (keys["ArrowRight"]) {
-    player.dx += player.speed;
-  } else if (keys["ArrowLeft"]) {
-    player.dx -= player.speed;
-  }
+  if (keys["ArrowRight"]) player.dx += player.speed;
+  else if (keys["ArrowLeft"]) player.dx -= player.speed;
 
-  // límite de velocidad
   player.dx = Math.max(-player.maxSpeed, Math.min(player.maxSpeed, player.dx));
-
-  // fricción
   player.dx *= player.friction;
 
   player.x += player.dx;
   cameraX = player.x - 150;
 
-  // gravedad
   player.dy += gravity;
   player.y += player.dy;
 
@@ -180,6 +213,8 @@ function update() {
   if (player.x >= finishX) {
     endGame(true);
   }
+
+  updateProgress();
 }
 
 function draw() {
@@ -195,11 +230,8 @@ function draw() {
     ctx.fillRect(obs.x - cameraX, obs.y, obs.size, obs.size);
   }
 
-  // meta
   ctx.fillStyle = "gold";
   ctx.fillRect(finishX - cameraX, 200, 20, 200);
-  ctx.fillStyle = "white";
-  ctx.fillText("FIN", finishX - cameraX - 10, 190);
 
   drawStickman(player);
 }
