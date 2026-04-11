@@ -10,9 +10,7 @@
       position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
       background: rgba(0,0,0,0.6); color: white;
     }
-    button {
-      padding: 12px 20px; border:none; border-radius:10px; font-size:16px; cursor:pointer;
-    }
+    button { padding: 12px 20px; border:none; border-radius:10px; font-size:16px; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -35,7 +33,7 @@ let gameOver = false;
 
 let player = {
   x: 100,
-  y: 200,
+  y: 0,
   width: 20,
   height: 50,
   dy: 0,
@@ -49,18 +47,22 @@ let obstacles = [];
 function generateWorld(xStart) {
   for (let i = 0; i < 10; i++) {
     let x = xStart + i * 250;
-    let y = 300 + Math.sin(i) * 80;
+    let y = 350 + Math.sin(i) * 60;
 
     platforms.push({x, y, width: 180, height: 20});
 
-    // obstáculo
-    if (Math.random() < 0.5) {
+    // evitar obstáculos cerca del inicio
+    if (x > 400 && Math.random() < 0.5) {
       obstacles.push({x: x + 120, y: y - 30, size: 30});
     }
   }
 }
 
+// generar mundo inicial
 generateWorld(0);
+
+// colocar jugador correctamente sobre la primera plataforma
+player.y = platforms[0].y - player.height;
 
 function drawStickman(p) {
   ctx.strokeStyle = "white";
@@ -68,18 +70,15 @@ function drawStickman(p) {
 
   let swing = Math.sin(p.frame * 0.3) * 10;
 
-  // cabeza
   ctx.beginPath();
   ctx.arc(p.x - cameraX + 10, p.y - 10, 10, 0, Math.PI * 2);
   ctx.stroke();
 
-  // cuerpo
   ctx.beginPath();
   ctx.moveTo(p.x - cameraX + 10, p.y);
   ctx.lineTo(p.x - cameraX + 10, p.y + 25);
   ctx.stroke();
 
-  // brazos animados
   ctx.beginPath();
   ctx.moveTo(p.x - cameraX + 10, p.y + 10);
   ctx.lineTo(p.x - cameraX - 5 + swing, p.y + 20);
@@ -87,7 +86,6 @@ function drawStickman(p) {
   ctx.lineTo(p.x - cameraX + 25 - swing, p.y + 20);
   ctx.stroke();
 
-  // piernas animadas
   ctx.beginPath();
   ctx.moveTo(p.x - cameraX + 10, p.y + 25);
   ctx.lineTo(p.x - cameraX - 5 - swing, p.y + 45);
@@ -125,7 +123,6 @@ function update() {
     }
   }
 
-  // colisión con obstáculos
   for (let obs of obstacles) {
     if (
       player.x < obs.x + obs.size &&
@@ -137,12 +134,10 @@ function update() {
     }
   }
 
-  // caída
   if (player.y > canvas.height) {
     endGame();
   }
 
-  // generar más mapa
   if (player.x > platforms[platforms.length - 1].x - 500) {
     generateWorld(platforms.length * 250);
   }
