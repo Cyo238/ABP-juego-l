@@ -2,25 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Stickman Parkour Mejorado</title>
+  <title>Stickman Parkour Controlado</title>
   <style>
     body { margin:0; overflow:hidden; background:#111; font-family:Arial; }
     canvas { display:block; }
     #ui {
       position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
-      background: linear-gradient(rgba(0,0,0,0.8), rgba(20,20,20,0.95)); color: white; text-align: center;
+      background: rgba(0,0,0,0.8); color: white;
     }
-    #ui h1 { font-size:48px; margin-bottom:20px; text-shadow:0 0 15px red; }
-    #ui p { margin-bottom:30px; }
-    button { padding:14px 26px; border:none; border-radius:30px; font-size:18px; cursor:pointer; background:linear-gradient(45deg,#ff0000,#ff6600); color:white; }
+    button { padding:12px 20px; border:none; border-radius:10px; cursor:pointer; }
   </style>
 </head>
 <body>
 <canvas id="game"></canvas>
 <div id="ui">
   <h1>💀 GAME OVER 💀</h1>
-  <p>El parkour no fue suficiente...</p>
-  <button onclick="restart()">🔁 Reintentar</button>
+  <button onclick="restart()">Reiniciar</button>
 </div>
 
 <script>
@@ -30,16 +27,18 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 let gravity = 0.6;
-let speed = 4;
-let cameraX = 0;
 let gameOver = false;
+
+let keys = {};
 
 let player = {
   x: 100,
   y: 0,
   width: 20,
   height: 50,
+  dx: 0,
   dy: 0,
+  speed: 5,
   jumping: false,
   grabbing: false,
   frame: 0
@@ -49,25 +48,18 @@ let platforms = [];
 let obstacles = [];
 
 function generateWorld(xStart) {
-  for (let i = 0; i < 10; i++) {
-    let x = xStart + i * 250;
-    let type = Math.random();
+  for (let i = 0; i < 8; i++) {
+    let x = xStart + i * 200;
 
-    // VARIEDAD DE MAPAS
-    if (type < 0.25) {
-      platforms.push({x, y: 350, width: 200, height: 20});
-    } else if (type < 0.5) {
-      platforms.push({x, y: 300, width: 150, height: 20});
-    } else if (type < 0.75) {
-      platforms.push({x, y: 250, width: 120, height: 20});
-    } else {
-      // plataforma alta difícil
-      platforms.push({x, y: 200, width: 100, height: 20});
-    }
+    // MAPA MÁS LÓGICO (tipo parkour progresivo)
+    let heightOptions = [350, 320, 300, 280];
+    let y = heightOptions[Math.floor(Math.random() * heightOptions.length)];
 
-    // obstaculos más variados
-    if (x > 400 && Math.random() < 0.6) {
-      obstacles.push({x: x + 100, y: 320, size: 30});
+    platforms.push({x, y, width: 150, height: 20});
+
+    // obstáculo solo si hay espacio
+    if (Math.random() < 0.4) {
+      obstacles.push({x: x + 80, y: y - 30, size: 30});
     }
   }
 }
@@ -82,46 +74,53 @@ function drawStickman(p) {
   let swing = Math.sin(p.frame * 0.3) * 10;
 
   ctx.beginPath();
-  ctx.arc(p.x - cameraX + 10, p.y - 10, 10, 0, Math.PI * 2);
+  ctx.arc(p.x + 10, p.y - 10, 10, 0, Math.PI * 2);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(p.x - cameraX + 10, p.y);
-  ctx.lineTo(p.x - cameraX + 10, p.y + 25);
+  ctx.moveTo(p.x + 10, p.y);
+  ctx.lineTo(p.x + 10, p.y + 25);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(p.x - cameraX + 10, p.y + 10);
-  ctx.lineTo(p.x - cameraX - 5 + swing, p.y + 20);
-  ctx.moveTo(p.x - cameraX + 10, p.y + 10);
-  ctx.lineTo(p.x - cameraX + 25 - swing, p.y + 20);
+  ctx.moveTo(p.x + 10, p.y + 10);
+  ctx.lineTo(p.x - 5 + swing, p.y + 20);
+  ctx.moveTo(p.x + 10, p.y + 10);
+  ctx.lineTo(p.x + 25 - swing, p.y + 20);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(p.x - cameraX + 10, p.y + 25);
-  ctx.lineTo(p.x - cameraX - 5 - swing, p.y + 45);
-  ctx.moveTo(p.x - cameraX + 10, p.y + 25);
-  ctx.lineTo(p.x - cameraX + 25 + swing, p.y + 45);
+  ctx.moveTo(p.x + 10, p.y + 25);
+  ctx.lineTo(p.x - 5 - swing, p.y + 45);
+  ctx.moveTo(p.x + 10, p.y + 25);
+  ctx.lineTo(p.x + 25 + swing, p.y + 45);
   ctx.stroke();
 
   ctx.fillStyle = "white";
-  ctx.fillText("pinto vrg", p.x - cameraX - 20, p.y - 30);
+  ctx.fillText("pinto vrg", p.x - 20, p.y - 30);
 }
 
 function update() {
   if (gameOver) return;
 
   player.frame++;
+
+  // movimiento manual
+  if (keys["ArrowRight"]) player.dx = player.speed;
+  else if (keys["ArrowLeft"]) player.dx = -player.speed;
+  else player.dx = 0;
+
+  player.x += player.dx;
+
+  // gravedad
   player.dy += gravity;
   player.y += player.dy;
-  player.x += speed;
-  cameraX = player.x - 100;
 
   player.jumping = true;
   player.grabbing = false;
 
   for (let plat of platforms) {
-    // colisión normal arriba
+    // colisión arriba
     if (
       player.x < plat.x + plat.width &&
       player.x + player.width > plat.x &&
@@ -133,7 +132,7 @@ function update() {
       player.jumping = false;
     }
 
-    // AGARRARSE AL BORDE
+    // agarrarse borde
     if (
       player.x + player.width > plat.x &&
       player.x < plat.x &&
@@ -159,8 +158,8 @@ function update() {
 
   if (player.y > canvas.height) endGame();
 
-  if (player.x > platforms[platforms.length - 1].x - 500) {
-    generateWorld(platforms.length * 250);
+  if (player.x > platforms[platforms.length - 1].x - 400) {
+    generateWorld(platforms.length * 200);
   }
 }
 
@@ -169,12 +168,12 @@ function draw() {
 
   ctx.fillStyle = "#0f0";
   for (let plat of platforms) {
-    ctx.fillRect(plat.x - cameraX, plat.y, plat.width, plat.height);
+    ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
   }
 
   ctx.fillStyle = "red";
   for (let obs of obstacles) {
-    ctx.fillRect(obs.x - cameraX, obs.y, obs.size, obs.size);
+    ctx.fillRect(obs.x, obs.y, obs.size, obs.size);
   }
 
   drawStickman(player);
@@ -194,7 +193,12 @@ function endGame() {
 function restart() { location.reload(); }
 
 window.addEventListener("keydown", e => {
+  keys[e.code] = true;
   if (e.code === "Space" && !player.jumping) player.dy = -12;
+});
+
+window.addEventListener("keyup", e => {
+  keys[e.code] = false;
 });
 
 loop();
