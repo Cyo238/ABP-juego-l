@@ -1,74 +1,46 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Stickman Parkour con Progreso</title>
+  <title>Stickman Parkour Estético</title>
   <style>
-    body { margin:0; overflow:hidden; background:#111; font-family:Arial; }
-    canvas { display:block; }
+    body { margin:0; overflow:hidden; font-family:Arial; background:#0b0f1a; }
+    canvas { display:block; }/* Barra progreso */
+#progressContainer {
+  position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 20px; background: rgba(255,255,255,0.1);
+  border-radius: 20px; overflow: hidden;
+}
+#progressBar {
+  height:100%; width:0%;
+  background: linear-gradient(90deg,#00ffcc,#00aaff);
+}
+#progressText {
+  position: fixed; top:35px; left:50%; transform:translateX(-50%);
+  color:white; font-size:14px;
+}
 
-    /* BARRA DE PROGRESO */
-    #progressContainer {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60%;
-      height: 20px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
+#ui {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
+  background: radial-gradient(circle at center, #1a0000, #000);
+  color: white; text-align: center;
+}
+#ui h1 { font-size: 60px; text-shadow: 0 0 20px red; }
+button {
+  padding:14px 28px; border:none; border-radius:30px;
+  font-size:18px; cursor:pointer;
+  background:linear-gradient(45deg,#ff0000,#ff8800);
+  color:white;
+}
 
-    #progressBar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00ff99, #00ccff);
-      transition: width 0.2s;
-    }
-
-    #progressText {
-      position: fixed;
-      top: 35px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
-    #ui {
-      position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
-      background: radial-gradient(circle at center, #1a0000, #000);
-      color: white; text-align: center;
-    }
-
-    #ui h1 { font-size: 60px; text-shadow: 0 0 20px red; }
-
-    button {
-      padding: 14px 28px; border: none; border-radius: 30px;
-      font-size: 18px; cursor: pointer;
-      background: linear-gradient(45deg,#ff0000,#ff8800);
-      color: white;
-    }
   </style>
 </head>
-<body>
-
-<div id="progressContainer">
-  <div id="progressBar"></div>
-</div>
-<div id="progressText">0%</div>
-
-<canvas id="game"></canvas>
+<body><div id="progressContainer"><div id="progressBar"></div></div>
+<div id="progressText">0%</div><canvas id="game"></canvas>
 
 <div id="ui">
   <h1 id="endText">💀 GAME OVER 💀</h1>
   <button onclick="restart()">🔁 Reiniciar</button>
-</div>
-
-<script>
+</div><script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
@@ -82,17 +54,9 @@ let finishX = 3000;
 let keys = {};
 
 let player = {
-  x: 100,
-  y: 0,
-  width: 20,
-  height: 50,
-  dx: 0,
-  dy: 0,
-  speed: 0.5,
-  maxSpeed: 6,
-  friction: 0.85,
-  jumping: false,
-  frame: 0
+  x: 100, y: 0, width: 20, height: 50,
+  dx: 0, dy: 0, speed: 0.5, maxSpeed: 6, friction: 0.85,
+  jumping: false, frame: 0
 };
 
 let platforms = [];
@@ -120,45 +84,91 @@ player.y = platforms[0].y - player.height;
 function updateProgress() {
   let progress = Math.min(player.x / finishX, 1);
   let percent = Math.floor(progress * 100);
-
   document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("progressText").innerText = percent + "% completado";
+  document.getElementById("progressText").innerText = percent + "%";
+}
+
+function drawBackground() {
+  let gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+  gradient.addColorStop(0,"#0f2027");
+  gradient.addColorStop(1,"#203a43");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // montañas simples (parallax)
+  ctx.fillStyle = "#182c3a";
+  for (let i=0;i<5;i++){
+    let x = (i*600 - cameraX*0.3) % (canvas.width+600) - 300;
+    ctx.beginPath();
+    ctx.moveTo(x,400);
+    ctx.lineTo(x+200,200);
+    ctx.lineTo(x+400,400);
+    ctx.fill();
+  }
+}
+
+function drawPlatforms() {
+  for (let plat of platforms) {
+    let px = plat.x - cameraX;
+
+    // sombra
+    ctx.fillStyle = "rgba(0,0,0,0.4)";
+    ctx.fillRect(px+5, plat.y+5, plat.width, plat.height);
+
+    // plataforma con degradado
+    let grad = ctx.createLinearGradient(px,plat.y,px,plat.y+plat.height);
+    grad.addColorStop(0,"#00ff99");
+    grad.addColorStop(1,"#008866");
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(px, plat.y, plat.width, plat.height);
+  }
+}
+
+function drawObstacles() {
+  for (let obs of obstacles) {
+    let px = obs.x - cameraX;
+
+    ctx.fillStyle = "rgba(0,0,0,0.4)";
+    ctx.fillRect(px+4, obs.y+4, obs.size, obs.size);
+
+    let grad = ctx.createLinearGradient(px,obs.y,px,obs.y+obs.size);
+    grad.addColorStop(0,"#ff4444");
+    grad.addColorStop(1,"#990000");
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(px, obs.y, obs.size, obs.size);
+  }
 }
 
 function drawStickman(p) {
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2;
 
-  let speedFactor = Math.min(Math.abs(p.dx) / p.maxSpeed, 1);
-  let swing = Math.sin(p.frame * 0.4) * 15 * speedFactor;
+  let speedFactor = Math.min(Math.abs(p.dx)/p.maxSpeed,1);
+  let swing = Math.sin(p.frame*0.4)*15*speedFactor;
 
   let px = p.x - cameraX;
 
+  ctx.beginPath(); ctx.arc(px+10,p.y-10,10,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px+10,p.y); ctx.lineTo(px+10,p.y+25); ctx.stroke();
+
   ctx.beginPath();
-  ctx.arc(px + 10, p.y - 10, 10, 0, Math.PI * 2);
+  ctx.moveTo(px+10,p.y+10);
+  ctx.lineTo(px-5+swing,p.y+20);
+  ctx.moveTo(px+10,p.y+10);
+  ctx.lineTo(px+25-swing,p.y+20);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(px + 10, p.y);
-  ctx.lineTo(px + 10, p.y + 25);
+  ctx.moveTo(px+10,p.y+25);
+  ctx.lineTo(px-5-swing,p.y+45);
+  ctx.moveTo(px+10,p.y+25);
+  ctx.lineTo(px+25+swing,p.y+45);
   ctx.stroke();
 
-  ctx.beginPath();
-  ctx.moveTo(px + 10, p.y + 10);
-  ctx.lineTo(px - 5 + swing, p.y + 20);
-  ctx.moveTo(px + 10, p.y + 10);
-  ctx.lineTo(px + 25 - swing, p.y + 20);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(px + 10, p.y + 25);
-  ctx.lineTo(px - 5 - swing, p.y + 45);
-  ctx.moveTo(px + 10, p.y + 25);
-  ctx.lineTo(px + 25 + swing, p.y + 45);
-  ctx.stroke();
-
-  ctx.fillStyle = "white";
-  ctx.fillText("pinto vrg", px - 20, p.y - 30);
+  ctx.fillStyle="white";
+  ctx.fillText("pinto vrg",px-20,p.y-30);
 }
 
 function update() {
@@ -199,68 +209,44 @@ function update() {
       player.x + player.width > obs.x &&
       player.y < obs.y + obs.size &&
       player.y + player.height > obs.y
-    ) {
-      endGame(false);
-    }
+    ) endGame(false);
   }
 
   if (player.y > canvas.height) endGame(false);
 
-  if (player.x > lastGeneratedX - 400 && lastGeneratedX < finishX) {
-    generateWorld();
-  }
-
-  if (player.x >= finishX) {
-    endGame(true);
-  }
+  if (player.x > lastGeneratedX - 400 && lastGeneratedX < finishX) generateWorld();
+  if (player.x >= finishX) endGame(true);
 
   updateProgress();
 }
 
 function draw() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawBackground();
+  drawPlatforms();
+  drawObstacles();
 
-  ctx.fillStyle = "#0f0";
-  for (let plat of platforms) {
-    ctx.fillRect(plat.x - cameraX, plat.y, plat.width, plat.height);
-  }
-
-  ctx.fillStyle = "red";
-  for (let obs of obstacles) {
-    ctx.fillRect(obs.x - cameraX, obs.y, obs.size, obs.size);
-  }
-
-  ctx.fillStyle = "gold";
-  ctx.fillRect(finishX - cameraX, 200, 20, 200);
+  ctx.fillStyle="gold";
+  ctx.fillRect(finishX - cameraX,200,20,200);
 
   drawStickman(player);
 }
 
-function loop() {
-  update();
-  draw();
-  requestAnimationFrame(loop);
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+
+function endGame(victory){
+  gameOver=true;
+  document.getElementById("endText").innerText = victory?"🏆 GANASTE 🏆":"💀 GAME OVER 💀";
+  document.getElementById("ui").style.display="flex";
 }
 
-function endGame(victory) {
-  gameOver = true;
-  let text = document.getElementById("endText");
-  text.innerText = victory ? "🏆 GANASTE 🏆" : "💀 GAME OVER 💀";
-  document.getElementById("ui").style.display = "flex";
-}
+function restart(){ location.reload(); }
 
-function restart() { location.reload(); }
-
-window.addEventListener("keydown", e => {
-  keys[e.code] = true;
-  if (e.code === "Space" && !player.jumping) player.dy = -12;
+window.addEventListener("keydown",e=>{
+  keys[e.code]=true;
+  if(e.code==="Space"&&!player.jumping) player.dy=-12;
 });
-
-window.addEventListener("keyup", e => {
-  keys[e.code] = false;
-});
+window.addEventListener("keyup",e=>{ keys[e.code]=false; });
 
 loop();
-</script>
-</body>
+</script></body>
 </html>
