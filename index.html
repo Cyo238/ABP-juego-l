@@ -6,15 +6,60 @@
   <style>
     body { margin:0; overflow:hidden; background:#111; font-family:Arial; }
     canvas { display:block; }
-    #ui { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; background: rgba(0,0,0,0.8); color: white; }
-    button { padding:12px 20px; border:none; border-radius:10px; cursor:pointer; }
+
+    #ui {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: radial-gradient(circle at center, #1a0000, #000);
+      color: white;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    #ui h1 {
+      font-size: 60px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px red;
+    }
+
+    #ui p {
+      opacity: 0.7;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 30px;
+      font-size: 18px;
+      cursor: pointer;
+      background: linear-gradient(45deg,#ff0000,#ff8800);
+      color: white;
+      box-shadow: 0 0 20px rgba(255,0,0,0.6);
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(255,100,0,1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
 <canvas id="game"></canvas>
 <div id="ui">
   <h1>💀 GAME OVER 💀</h1>
-  <button onclick="restart()">Reiniciar</button>
+  <p>Intenta superar tu récord...</p>
+  <button onclick="restart()">🔁 Reintentar</button>
 </div>
 
 <script>
@@ -53,10 +98,10 @@ function generateWorld() {
     let heights = [350, 320, 300, 280];
     let y = heights[Math.floor(Math.random() * heights.length)];
 
-    platforms.push({x, y, width: 140, height: 20});
+    platforms.push({x, y, width: 140, height: 20, alpha: 0});
 
     if (Math.random() < 0.4) {
-      obstacles.push({x: x + 70, y: y - 30, size: 30});
+      obstacles.push({x: x + 70, y: y - 30, size: 30, alpha: 0});
     }
   }
   lastGeneratedX += 6 * 180;
@@ -104,17 +149,13 @@ function update() {
 
   player.frame++;
 
-  // movimiento
   if (keys["ArrowRight"]) player.dx = player.speed;
   else if (keys["ArrowLeft"]) player.dx = -player.speed;
   else player.dx = 0;
 
   player.x += player.dx;
-
-  // cámara sigue al jugador
   cameraX = player.x - 150;
 
-  // gravedad
   player.dy += gravity;
   player.y += player.dy;
 
@@ -122,6 +163,9 @@ function update() {
   player.grabbing = false;
 
   for (let plat of platforms) {
+    // fade-in animación
+    if (plat.alpha < 1) plat.alpha += 0.05;
+
     if (
       player.x < plat.x + plat.width &&
       player.x + player.width > plat.x &&
@@ -146,6 +190,8 @@ function update() {
   }
 
   for (let obs of obstacles) {
+    if (obs.alpha < 1) obs.alpha += 0.05;
+
     if (
       player.x < obs.x + obs.size &&
       player.x + player.width > obs.x &&
@@ -158,7 +204,6 @@ function update() {
 
   if (player.y > canvas.height) endGame();
 
-  // generar mundo infinito
   if (player.x > lastGeneratedX - 400) {
     generateWorld();
   }
@@ -167,15 +212,19 @@ function update() {
 function draw() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  ctx.fillStyle = "#0f0";
   for (let plat of platforms) {
+    ctx.globalAlpha = plat.alpha;
+    ctx.fillStyle = "#0f0";
     ctx.fillRect(plat.x - cameraX, plat.y, plat.width, plat.height);
   }
 
-  ctx.fillStyle = "red";
   for (let obs of obstacles) {
+    ctx.globalAlpha = obs.alpha;
+    ctx.fillStyle = "red";
     ctx.fillRect(obs.x - cameraX, obs.y, obs.size, obs.size);
   }
+
+  ctx.globalAlpha = 1;
 
   drawStickman(player);
 }
