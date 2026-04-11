@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Stickman Parkour con Final</title>
+  <title>Stickman Parkour Fluido</title>
   <style>
     body { margin:0; overflow:hidden; background:#111; font-family:Arial; }
     canvas { display:block; }
@@ -39,7 +39,7 @@ canvas.height = innerHeight;
 let gravity = 0.6;
 let gameOver = false;
 let cameraX = 0;
-let win = false;
+let finishX = 3000;
 
 let keys = {};
 
@@ -50,7 +50,9 @@ let player = {
   height: 50,
   dx: 0,
   dy: 0,
-  speed: 5,
+  speed: 0.5, // aceleración
+  maxSpeed: 6,
+  friction: 0.85,
   jumping: false,
   frame: 0
 };
@@ -58,46 +60,94 @@ let player = {
 let platforms = [];
 let obstacles = [];
 let lastGeneratedX = 0;
-let finishX = 3000; // FINAL DEL NIVEL
 
 function generateWorld() {
   for (let i = 0; i < 6; i++) {
     let x = lastGeneratedX + i * 180;
-
     let heights = [350, 320, 300, 280];
     let y = heights[Math.floor(Math.random() * heights.length)];
 
-    platforms.push({x, y, width: 140, height: 20, alpha: 0});
+    platforms.push({x, y, width: 140, height: 20});
 
     if (Math.random() < 0.4) {
-      obstacles.push({x: x + 70, y: y - 30, size: 30, alpha: 0});
+      obstacles.push({x: x + 70, y: y - 30, size: 30});
     }
   }
   lastGeneratedX += 6 * 180;
 }
 
-// inicio
 generateWorld();
 player.y = platforms[0].y - player.height;
+
+function drawStickman(p) {
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+
+  let speedFactor = Math.min(Math.abs(p.dx) / p.maxSpeed, 1);
+  let swing = Math.sin(p.frame * 0.4) * 15 * speedFactor;
+
+  let px = p.x - cameraX;
+
+  // cabeza
+  ctx.beginPath();
+  ctx.arc(px + 10, p.y - 10, 10, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // cuerpo
+  ctx.beginPath();
+  ctx.moveTo(px + 10, p.y);
+  ctx.lineTo(px + 10, p.y + 25);
+  ctx.stroke();
+
+  // brazos
+  ctx.beginPath();
+  ctx.moveTo(px + 10, p.y + 10);
+  ctx.lineTo(px - 5 + swing, p.y + 20);
+  ctx.moveTo(px + 10, p.y + 10);
+  ctx.lineTo(px + 25 - swing, p.y + 20);
+  ctx.stroke();
+
+  // piernas
+  ctx.beginPath();
+  ctx.moveTo(px + 10, p.y + 25);
+  ctx.lineTo(px - 5 - swing, p.y + 45);
+  ctx.moveTo(px + 10, p.y + 25);
+  ctx.lineTo(px + 25 + swing, p.y + 45);
+  ctx.stroke();
+
+  // nombre
+  ctx.fillStyle = "white";
+  ctx.fillText("pinto vrg", px - 20, p.y - 30);
+}
 
 function update() {
   if (gameOver) return;
 
-  if (keys["ArrowRight"]) player.dx = player.speed;
-  else if (keys["ArrowLeft"]) player.dx = -player.speed;
-  else player.dx = 0;
+  player.frame++;
+
+  // aceleración progresiva
+  if (keys["ArrowRight"]) {
+    player.dx += player.speed;
+  } else if (keys["ArrowLeft"]) {
+    player.dx -= player.speed;
+  }
+
+  // límite de velocidad
+  player.dx = Math.max(-player.maxSpeed, Math.min(player.maxSpeed, player.dx));
+
+  // fricción
+  player.dx *= player.friction;
 
   player.x += player.dx;
   cameraX = player.x - 150;
 
+  // gravedad
   player.dy += gravity;
   player.y += player.dy;
 
   player.jumping = true;
 
   for (let plat of platforms) {
-    if (plat.alpha < 1) plat.alpha += 0.05;
-
     if (
       player.x < plat.x + plat.width &&
       player.x + player.width > plat.x &&
@@ -111,8 +161,6 @@ function update() {
   }
 
   for (let obs of obstacles) {
-    if (obs.alpha < 1) obs.alpha += 0.05;
-
     if (
       player.x < obs.x + obs.size &&
       player.x + player.width > obs.x &&
@@ -125,12 +173,10 @@ function update() {
 
   if (player.y > canvas.height) endGame(false);
 
-  // GENERAR MAPA HASTA EL FINAL
   if (player.x > lastGeneratedX - 400 && lastGeneratedX < finishX) {
     generateWorld();
   }
 
-  // LLEGAR AL FINAL
   if (player.x >= finishX) {
     endGame(true);
   }
@@ -139,28 +185,23 @@ function update() {
 function draw() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
+  ctx.fillStyle = "#0f0";
   for (let plat of platforms) {
-    ctx.globalAlpha = plat.alpha;
-    ctx.fillStyle = "#0f0";
     ctx.fillRect(plat.x - cameraX, plat.y, plat.width, plat.height);
   }
 
+  ctx.fillStyle = "red";
   for (let obs of obstacles) {
-    ctx.globalAlpha = obs.alpha;
-    ctx.fillStyle = "red";
     ctx.fillRect(obs.x - cameraX, obs.y, obs.size, obs.size);
   }
 
-  // META VISUAL
-  ctx.globalAlpha = 1;
+  // meta
   ctx.fillStyle = "gold";
   ctx.fillRect(finishX - cameraX, 200, 20, 200);
-
   ctx.fillStyle = "white";
   ctx.fillText("FIN", finishX - cameraX - 10, 190);
 
-  // jugador
-  ctx.fillRect(player.x - cameraX, player.y, player.width, player.height);
+  drawStickman(player);
 }
 
 function loop() {
@@ -172,13 +213,7 @@ function loop() {
 function endGame(victory) {
   gameOver = true;
   let text = document.getElementById("endText");
-
-  if (victory) {
-    text.innerText = "🏆 GANASTE 🏆";
-  } else {
-    text.innerText = "💀 GAME OVER 💀";
-  }
-
+  text.innerText = victory ? "🏆 GANASTE 🏆" : "💀 GAME OVER 💀";
   document.getElementById("ui").style.display = "flex";
 }
 
