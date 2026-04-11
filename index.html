@@ -2,14 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Stickman Parkour Controlado</title>
+  <title>Stickman Parkour Infinito</title>
   <style>
     body { margin:0; overflow:hidden; background:#111; font-family:Arial; }
     canvas { display:block; }
-    #ui {
-      position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
-      background: rgba(0,0,0,0.8); color: white;
-    }
+    #ui { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; background: rgba(0,0,0,0.8); color: white; }
     button { padding:12px 20px; border:none; border-radius:10px; cursor:pointer; }
   </style>
 </head>
@@ -28,6 +25,7 @@ canvas.height = innerHeight;
 
 let gravity = 0.6;
 let gameOver = false;
+let cameraX = 0;
 
 let keys = {};
 
@@ -46,25 +44,26 @@ let player = {
 
 let platforms = [];
 let obstacles = [];
+let lastGeneratedX = 0;
 
-function generateWorld(xStart) {
-  for (let i = 0; i < 8; i++) {
-    let x = xStart + i * 200;
+function generateWorld() {
+  for (let i = 0; i < 6; i++) {
+    let x = lastGeneratedX + i * 180;
 
-    // MAPA MÁS LÓGICO (tipo parkour progresivo)
-    let heightOptions = [350, 320, 300, 280];
-    let y = heightOptions[Math.floor(Math.random() * heightOptions.length)];
+    let heights = [350, 320, 300, 280];
+    let y = heights[Math.floor(Math.random() * heights.length)];
 
-    platforms.push({x, y, width: 150, height: 20});
+    platforms.push({x, y, width: 140, height: 20});
 
-    // obstáculo solo si hay espacio
     if (Math.random() < 0.4) {
-      obstacles.push({x: x + 80, y: y - 30, size: 30});
+      obstacles.push({x: x + 70, y: y - 30, size: 30});
     }
   }
+  lastGeneratedX += 6 * 180;
 }
 
-generateWorld(0);
+// inicio
+generateWorld();
 player.y = platforms[0].y - player.height;
 
 function drawStickman(p) {
@@ -74,30 +73,30 @@ function drawStickman(p) {
   let swing = Math.sin(p.frame * 0.3) * 10;
 
   ctx.beginPath();
-  ctx.arc(p.x + 10, p.y - 10, 10, 0, Math.PI * 2);
+  ctx.arc(p.x - cameraX + 10, p.y - 10, 10, 0, Math.PI * 2);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(p.x + 10, p.y);
-  ctx.lineTo(p.x + 10, p.y + 25);
+  ctx.moveTo(p.x - cameraX + 10, p.y);
+  ctx.lineTo(p.x - cameraX + 10, p.y + 25);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(p.x + 10, p.y + 10);
-  ctx.lineTo(p.x - 5 + swing, p.y + 20);
-  ctx.moveTo(p.x + 10, p.y + 10);
-  ctx.lineTo(p.x + 25 - swing, p.y + 20);
+  ctx.moveTo(p.x - cameraX + 10, p.y + 10);
+  ctx.lineTo(p.x - cameraX - 5 + swing, p.y + 20);
+  ctx.moveTo(p.x - cameraX + 10, p.y + 10);
+  ctx.lineTo(p.x - cameraX + 25 - swing, p.y + 20);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(p.x + 10, p.y + 25);
-  ctx.lineTo(p.x - 5 - swing, p.y + 45);
-  ctx.moveTo(p.x + 10, p.y + 25);
-  ctx.lineTo(p.x + 25 + swing, p.y + 45);
+  ctx.moveTo(p.x - cameraX + 10, p.y + 25);
+  ctx.lineTo(p.x - cameraX - 5 - swing, p.y + 45);
+  ctx.moveTo(p.x - cameraX + 10, p.y + 25);
+  ctx.lineTo(p.x - cameraX + 25 + swing, p.y + 45);
   ctx.stroke();
 
   ctx.fillStyle = "white";
-  ctx.fillText("pinto vrg", p.x - 20, p.y - 30);
+  ctx.fillText("pinto vrg", p.x - cameraX - 20, p.y - 30);
 }
 
 function update() {
@@ -105,12 +104,15 @@ function update() {
 
   player.frame++;
 
-  // movimiento manual
+  // movimiento
   if (keys["ArrowRight"]) player.dx = player.speed;
   else if (keys["ArrowLeft"]) player.dx = -player.speed;
   else player.dx = 0;
 
   player.x += player.dx;
+
+  // cámara sigue al jugador
+  cameraX = player.x - 150;
 
   // gravedad
   player.dy += gravity;
@@ -120,7 +122,6 @@ function update() {
   player.grabbing = false;
 
   for (let plat of platforms) {
-    // colisión arriba
     if (
       player.x < plat.x + plat.width &&
       player.x + player.width > plat.x &&
@@ -132,7 +133,6 @@ function update() {
       player.jumping = false;
     }
 
-    // agarrarse borde
     if (
       player.x + player.width > plat.x &&
       player.x < plat.x &&
@@ -158,8 +158,9 @@ function update() {
 
   if (player.y > canvas.height) endGame();
 
-  if (player.x > platforms[platforms.length - 1].x - 400) {
-    generateWorld(platforms.length * 200);
+  // generar mundo infinito
+  if (player.x > lastGeneratedX - 400) {
+    generateWorld();
   }
 }
 
@@ -168,12 +169,12 @@ function draw() {
 
   ctx.fillStyle = "#0f0";
   for (let plat of platforms) {
-    ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+    ctx.fillRect(plat.x - cameraX, plat.y, plat.width, plat.height);
   }
 
   ctx.fillStyle = "red";
   for (let obs of obstacles) {
-    ctx.fillRect(obs.x, obs.y, obs.size, obs.size);
+    ctx.fillRect(obs.x - cameraX, obs.y, obs.size, obs.size);
   }
 
   drawStickman(player);
