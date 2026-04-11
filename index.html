@@ -1,30 +1,48 @@
 <!DOCTYPE html><html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Stickman Parkour Estético</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Stickman Parkour Mobile</title>
   <style>
     body { margin:0; overflow:hidden; font-family:Arial; background:#0b0f1a; }
-    canvas { display:block; }/* Barra progreso */
+    canvas { display:block; }/* CONTROLES MÓVIL */
+#controls {
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  pointer-events: none;
+}
+
+.btn {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(5px);
+  color: white;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  user-select: none;
+}
+
 #progressContainer {
   position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
-  width: 60%; height: 20px; background: rgba(255,255,255,0.1);
+  width: 80%; height: 15px; background: rgba(255,255,255,0.1);
   border-radius: 20px; overflow: hidden;
 }
-#progressBar {
-  height:100%; width:0%;
-  background: linear-gradient(90deg,#00ffcc,#00aaff);
-}
-#progressText {
-  position: fixed; top:35px; left:50%; transform:translateX(-50%);
-  color:white; font-size:14px;
-}
+#progressBar { height:100%; width:0%; background: linear-gradient(90deg,#00ffcc,#00aaff); }
 
 #ui {
   position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
   background: radial-gradient(circle at center, #1a0000, #000);
   color: white; text-align: center;
 }
-#ui h1 { font-size: 60px; text-shadow: 0 0 20px red; }
+
 button {
   padding:14px 28px; border:none; border-radius:30px;
   font-size:18px; cursor:pointer;
@@ -34,17 +52,25 @@ button {
 
   </style>
 </head>
-<body><div id="progressContainer"><div id="progressBar"></div></div>
-<div id="progressText">0%</div><canvas id="game"></canvas>
+<body><div id="progressContainer"><div id="progressBar"></div></div><canvas id="game"></canvas>
 
-<div id="ui">
+<div id="controls">
+  <div class="btn" id="left">⬅️</div>
+  <div class="btn" id="jump">⬆️</div>
+  <div class="btn" id="right">➡️</div>
+</div><div id="ui">
   <h1 id="endText">💀 GAME OVER 💀</h1>
   <button onclick="restart()">🔁 Reiniciar</button>
 </div><script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
 let gravity = 0.6;
 let gameOver = false;
@@ -66,8 +92,8 @@ let lastGeneratedX = 0;
 function generateWorld() {
   for (let i = 0; i < 6; i++) {
     let x = lastGeneratedX + i * 180;
-    let heights = [350, 320, 300, 280];
-    let y = heights[Math.floor(Math.random() * heights.length)];
+    let heights = [canvas.height-150, canvas.height-180, canvas.height-200];
+    let y = heights[Math.floor(Math.random()*heights.length)];
 
     platforms.push({x, y, width: 140, height: 20});
 
@@ -81,154 +107,71 @@ function generateWorld() {
 generateWorld();
 player.y = platforms[0].y - player.height;
 
-function updateProgress() {
-  let progress = Math.min(player.x / finishX, 1);
-  let percent = Math.floor(progress * 100);
-  document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("progressText").innerText = percent + "%";
+function updateProgress(){
+  let progress = Math.min(player.x/finishX,1);
+  document.getElementById("progressBar").style.width = (progress*100)+"%";
 }
 
-function drawBackground() {
-  let gradient = ctx.createLinearGradient(0,0,0,canvas.height);
-  gradient.addColorStop(0,"#0f2027");
-  gradient.addColorStop(1,"#203a43");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+function update(){
+  if(gameOver) return;
 
-  // montañas simples (parallax)
-  ctx.fillStyle = "#182c3a";
-  for (let i=0;i<5;i++){
-    let x = (i*600 - cameraX*0.3) % (canvas.width+600) - 300;
-    ctx.beginPath();
-    ctx.moveTo(x,400);
-    ctx.lineTo(x+200,200);
-    ctx.lineTo(x+400,400);
-    ctx.fill();
-  }
-}
-
-function drawPlatforms() {
-  for (let plat of platforms) {
-    let px = plat.x - cameraX;
-
-    // sombra
-    ctx.fillStyle = "rgba(0,0,0,0.4)";
-    ctx.fillRect(px+5, plat.y+5, plat.width, plat.height);
-
-    // plataforma con degradado
-    let grad = ctx.createLinearGradient(px,plat.y,px,plat.y+plat.height);
-    grad.addColorStop(0,"#00ff99");
-    grad.addColorStop(1,"#008866");
-
-    ctx.fillStyle = grad;
-    ctx.fillRect(px, plat.y, plat.width, plat.height);
-  }
-}
-
-function drawObstacles() {
-  for (let obs of obstacles) {
-    let px = obs.x - cameraX;
-
-    ctx.fillStyle = "rgba(0,0,0,0.4)";
-    ctx.fillRect(px+4, obs.y+4, obs.size, obs.size);
-
-    let grad = ctx.createLinearGradient(px,obs.y,px,obs.y+obs.size);
-    grad.addColorStop(0,"#ff4444");
-    grad.addColorStop(1,"#990000");
-
-    ctx.fillStyle = grad;
-    ctx.fillRect(px, obs.y, obs.size, obs.size);
-  }
-}
-
-function drawStickman(p) {
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 2;
-
-  let speedFactor = Math.min(Math.abs(p.dx)/p.maxSpeed,1);
-  let swing = Math.sin(p.frame*0.4)*15*speedFactor;
-
-  let px = p.x - cameraX;
-
-  ctx.beginPath(); ctx.arc(px+10,p.y-10,10,0,Math.PI*2); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(px+10,p.y); ctx.lineTo(px+10,p.y+25); ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(px+10,p.y+10);
-  ctx.lineTo(px-5+swing,p.y+20);
-  ctx.moveTo(px+10,p.y+10);
-  ctx.lineTo(px+25-swing,p.y+20);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(px+10,p.y+25);
-  ctx.lineTo(px-5-swing,p.y+45);
-  ctx.moveTo(px+10,p.y+25);
-  ctx.lineTo(px+25+swing,p.y+45);
-  ctx.stroke();
-
-  ctx.fillStyle="white";
-  ctx.fillText("pinto vrg",px-20,p.y-30);
-}
-
-function update() {
-  if (gameOver) return;
-
-  player.frame++;
-
-  if (keys["ArrowRight"]) player.dx += player.speed;
-  else if (keys["ArrowLeft"]) player.dx -= player.speed;
+  if(keys["right"]) player.dx += player.speed;
+  if(keys["left"]) player.dx -= player.speed;
 
   player.dx = Math.max(-player.maxSpeed, Math.min(player.maxSpeed, player.dx));
   player.dx *= player.friction;
 
   player.x += player.dx;
-  cameraX = player.x - 150;
+  cameraX = player.x - canvas.width/3;
 
   player.dy += gravity;
   player.y += player.dy;
 
   player.jumping = true;
 
-  for (let plat of platforms) {
-    if (
-      player.x < plat.x + plat.width &&
-      player.x + player.width > plat.x &&
-      player.y + player.height < plat.y + 10 &&
-      player.y + player.height + player.dy >= plat.y
-    ) {
+  for(let plat of platforms){
+    if(player.x < plat.x+plat.width && player.x+player.width > plat.x &&
+       player.y+player.height < plat.y+10 && player.y+player.height+player.dy >= plat.y){
       player.y = plat.y - player.height;
       player.dy = 0;
       player.jumping = false;
     }
   }
 
-  for (let obs of obstacles) {
-    if (
-      player.x < obs.x + obs.size &&
-      player.x + player.width > obs.x &&
-      player.y < obs.y + obs.size &&
-      player.y + player.height > obs.y
-    ) endGame(false);
+  for(let obs of obstacles){
+    if(player.x < obs.x+obs.size && player.x+player.width > obs.x &&
+       player.y < obs.y+obs.size && player.y+player.height > obs.y){
+      endGame(false);
+    }
   }
 
-  if (player.y > canvas.height) endGame(false);
+  if(player.y > canvas.height) endGame(false);
 
-  if (player.x > lastGeneratedX - 400 && lastGeneratedX < finishX) generateWorld();
-  if (player.x >= finishX) endGame(true);
+  if(player.x > lastGeneratedX - 400 && lastGeneratedX < finishX) generateWorld();
+  if(player.x >= finishX) endGame(true);
 
   updateProgress();
 }
 
-function draw() {
-  drawBackground();
-  drawPlatforms();
-  drawObstacles();
+function draw(){
+  ctx.fillStyle = "#0f2027";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  ctx.fillStyle="gold";
-  ctx.fillRect(finishX - cameraX,200,20,200);
+  for(let plat of platforms){
+    ctx.fillStyle = "#00ff99";
+    ctx.fillRect(plat.x-cameraX, plat.y, plat.width, plat.height);
+  }
 
-  drawStickman(player);
+  for(let obs of obstacles){
+    ctx.fillStyle = "red";
+    ctx.fillRect(obs.x-cameraX, obs.y, obs.size, obs.size);
+  }
+
+  ctx.fillStyle = "gold";
+  ctx.fillRect(finishX-cameraX, canvas.height-250, 20, 200);
+
+  ctx.fillStyle="white";
+  ctx.fillRect(player.x-cameraX, player.y, player.width, player.height);
 }
 
 function loop(){ update(); draw(); requestAnimationFrame(loop); }
@@ -241,11 +184,30 @@ function endGame(victory){
 
 function restart(){ location.reload(); }
 
+// teclado
 window.addEventListener("keydown",e=>{
-  keys[e.code]=true;
+  if(e.code==="ArrowRight") keys["right"]=true;
+  if(e.code==="ArrowLeft") keys["left"]=true;
   if(e.code==="Space"&&!player.jumping) player.dy=-12;
 });
-window.addEventListener("keyup",e=>{ keys[e.code]=false; });
+window.addEventListener("keyup",e=>{
+  if(e.code==="ArrowRight") keys["right"]=false;
+  if(e.code==="ArrowLeft") keys["left"]=false;
+});
+
+// móvil
+function bindBtn(id, key){
+  let btn = document.getElementById(id);
+  btn.addEventListener("touchstart",()=> keys[key]=true);
+  btn.addEventListener("touchend",()=> keys[key]=false);
+}
+
+bindBtn("left","left");
+bindBtn("right","right");
+
+document.getElementById("jump").addEventListener("touchstart",()=>{
+  if(!player.jumping) player.dy=-12;
+});
 
 loop();
 </script></body>
