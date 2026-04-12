@@ -3,257 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stickman Parkour ULTRA+</title>
+<title>Stickman Parkour FIX FINAL</title>
 <style>
 body{margin:0;overflow:hidden;background:#0b0f1a;font-family:Arial;color:white}
-canvas{display:block}
 
-/* MENU ESTÉTICO */
-#menu{
- position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+canvas{position:fixed;top:0;left:0;z-index:0}
+
+#menu, #shop{
+ position:fixed;inset:0;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
- text-align:center;z-index:5
+ z-index:10;
 }
-#menu h1{
- font-size:48px;
- text-shadow:0 0 20px #00ffff;
-}
+#shop{display:none}
 
 .card{
  background:rgba(255,255,255,0.05);
  padding:20px;border-radius:20px;
  backdrop-filter:blur(10px);
- box-shadow:0 0 20px rgba(0,255,255,0.2);
 }
 
-input,button{
- background:linear-gradient(45deg,#00ccff,#00ffcc);
- cursor:pointer;font-weight:bold;
- transition:transform 0.15s ease, box-shadow 0.15s ease;
-}
-button:active{transform:scale(0.95);box-shadow:0 0 10px #00ffff;}
 button{
- background:linear-gradient(45deg,#00ccff,#00ffcc);
- cursor:pointer;font-weight:bold
+ padding:12px 20px;margin:10px;border:none;border-radius:10px;
+ background:#00ffaa;cursor:pointer;font-weight:bold;
 }
 
-/* TIENDA */
-#shop{
- position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
- background:#0b0f1a;z-index:6
+#ui{
+ position:fixed;inset:0;display:none;
+ align-items:center;justify-content:center;flex-direction:column;
+ background:#000;z-index:20;
 }
-.skin{
- margin:10px;padding:15px;border-radius:15px;
- background:rgba(255,255,255,0.05);
- box-shadow:0 0 15px rgba(0,255,255,0.2);
-}
-
-#progressContainer{position:fixed;top:10px;left:50%;transform:translateX(-50%);width:70%;height:15px;background:#222;border-radius:20px}
-#progressBar{height:100%;width:0%;background:#00ffaa}
-#progressText{position:fixed;top:30px;left:50%;transform:translateX(-50%)}
-
-#coins{position:fixed;top:10px;right:10px}
-
-#ui{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:#000}
 </style>
 </head>
 <body>
 
 <div id="menu">
  <div class="card">
-  <h1>⚡ Stickman Parkour ⚡</h1>
+  <h1>Stickman Parkour</h1>
   <input id="name" placeholder="Tu nombre">
-  <button onclick="openShop()">🛒 Tienda</button>
-  <button onclick="startGame()">🎮 Jugar</button>
+  <br>
+  <button id="btnShop">🛒 Tienda</button>
+  <button id="btnPlay">🎮 Jugar</button>
  </div>
 </div>
 
 <div id="shop">
- <h2>🛒 Tienda de Skins</h2>
-
- <div class="skin">
-  🥷 Assassin - 200💰
-  <button onclick="buySkin('assassin',200)">Comprar</button>
- </div>
-
- <div class="skin">
-  ⚡ Pikachu - 300💰
-  <button onclick="buySkin('pikachu',300)">Comprar</button>
- </div>
-
- <div class="skin">
-  🔥 Demon - 250💰
-  <button onclick="buySkin('demon',250)">Comprar</button>
- </div>
-
- <button onclick="closeShop()">⬅ Volver</button>
+ <h2>Tienda</h2>
+ <button id="btnBack">⬅ Volver</button>
 </div>
 
-<div id="progressContainer"><div id="progressBar"></div></div>
-<div id="progressText">0%</div>
-<div id="coins">💰 0</div>
-
-<canvas id="game" style="position:fixed;inset:0;z-index:0"></canvas>
+<canvas id="game"></canvas>
 
 <div id="ui">
  <h1 id="endText"></h1>
- <button onclick="restart()">Reiniciar</button>
+ <button onclick="location.reload()">Reiniciar</button>
 </div>
 
 <script>
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-resize();window.addEventListener("resize",resize);
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-let playerName="",coins=0,ownedSkins=["white"],skin="white";
-let gameStarted=false,gameOver=false;
-let keys={},cameraX=0,finishX=4000;
+let gameStarted=false;
+let gameOver=false;
+
+let player={x:100,y:200,dx:0,dy:0};
 let gravity=0.6;
 
-let player={x:100,y:0,width:20,height:50,dx:0,dy:0,jumping:false};
-let platforms=[],obstacles=[],lastX=0;
-
-function startGame(){
- playerName=document.getElementById("name").value||"Jugador";
- 
- // guardar nombre
- localStorage.setItem("playerName", playerName);
- 
- resetGame();
+// BOTONES (FIX REAL)
+document.getElementById("btnPlay").addEventListener("click",()=>{
  document.getElementById("menu").style.display="none";
- document.getElementById("ui").style.display="none";
- gameOver=false;
  gameStarted=true;
-}
+ resetGame();
+});
+
+document.getElementById("btnShop").addEventListener("click",()=>{
+ document.getElementById("menu").style.display="none";
+ document.getElementById("shop").style.display="flex";
+});
+
+document.getElementById("btnBack").addEventListener("click",()=>{
+ document.getElementById("shop").style.display="none";
+ document.getElementById("menu").style.display="flex";
+});
 
 function resetGame(){
  gameOver=false;
  player.x=100;
+ player.y=200;
  player.dx=0;
  player.dy=0;
- 
- platforms=[];
- obstacles=[];
- lastX=0;
- 
- generate();
- 
- // asegurar que SIEMPRE empiece en plataforma
- if(platforms.length>0){
-   player.y=platforms[0].y-player.height;
- }
-}
-
-function generate(){
- for(let i=0;i<5;i++){
-  let x=lastX+i*200;
-  let y=canvas.height-(150+Math.random()*120);
-  platforms.push({x,y,width:150,height:20});
-  if(Math.random()<0.4) obstacles.push({x:x+80,y:y-30,size:30});
- }
- lastX+=5*200;
-}
-
-generate();
-
-function updateProgress(){
- let p=Math.min(player.x/finishX,1);
- let per=Math.floor(p*100);
- document.getElementById("progressBar").style.width=per+"%";
- document.getElementById("progressText").innerText=per+"%";
-}
-
-function drawPlayer(){
- let px=player.x-cameraX;
- ctx.fillStyle=skin;
-
- if(skin==="assassin"){
-  ctx.fillStyle="black";
- }
- if(skin==="pikachu"){
-  ctx.fillStyle="yellow";
- }
- if(skin==="demon"){
-  ctx.fillStyle="red";
- }
-
- ctx.fillRect(px,player.y,20,50);
- ctx.fillStyle="white";
- ctx.fillText(playerName,px-20,player.y-10);
 }
 
 function update(){
  if(!gameStarted||gameOver)return;
 
- if(keys.ArrowRight) player.dx+=0.5;
- if(keys.ArrowLeft) player.dx-=0.5;
-
- player.dx*=0.85;
- player.x+=player.dx;
- cameraX=player.x-200;
-
  player.dy+=gravity;
  player.y+=player.dy;
 
- player.jumping=true;
- for(let p of platforms){
-  if(player.x<p.x+p.width&&player.x+20>p.x&&player.y+50<p.y+10&&player.y+50+player.dy>=p.y){
-   player.y=p.y-50;player.dy=0;player.jumping=false;
-  }
+ if(player.y>canvas.height){
+  gameOver=true;
+  document.getElementById("ui").style.display="flex";
+  document.getElementById("endText").innerText="PERDISTE";
  }
-
- for(let o of obstacles){
-  if(player.x<o.x+o.size&&player.x+20>o.x&&player.y<o.y+o.size&&player.y+50>o.y){endGame(false)}
- }
-
- if(player.y>canvas.height) endGame(false);
- if(player.x>lastX-400) generate();
- if(player.x>=finishX) endGame(true);
-
- updateProgress();
 }
 
 function draw(){
- ctx.fillStyle="#111";ctx.fillRect(0,0,canvas.width,canvas.height);
- for(let p of platforms){ctx.fillStyle="#00ffaa";ctx.fillRect(p.x-cameraX,p.y,p.width,p.height)}
- for(let o of obstacles){ctx.fillStyle="red";ctx.fillRect(o.x-cameraX,o.y,o.size,o.size)}
- drawPlayer();
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle="white";
+ ctx.fillRect(player.x,player.y,20,50);
 }
 
 function loop(){update();draw();requestAnimationFrame(loop)}
-
-function endGame(win){
- gameOver=true;
- 
- document.getElementById("endText").innerText = win ? "🏆 GANASTE" : "💀 PERDISTE";
- 
- // mantener nombre visible
- document.getElementById("endText").innerText += "
-Jugador: " + playerName;
- 
- document.getElementById("ui").style.display="flex";
-}
-
-function restart(){location.reload()}
-
-function openShop(){document.getElementById("menu").style.display="none";document.getElementById("shop").style.display="flex"}
-function closeShop(){document.getElementById("shop").style.display="none";document.getElementById("menu").style.display="flex"}
-
-function buySkin(color,price){
- if(coins>=price){coins-=price;skin=color}
-}
-
-window.addEventListener("keydown",e=>{
- if(e.code==="ArrowRight") keys.ArrowRight=true;
- if(e.code==="ArrowLeft") keys.ArrowLeft=true;
- if(e.code==="Space"&&!player.jumping) player.dy=-12;
-});
-window.addEventListener("keyup",e=>{
- if(e.code==="ArrowRight") keys.ArrowRight=false;
- if(e.code==="ArrowLeft") keys.ArrowLeft=false;
-});
-
 loop();
 </script>
 </body>
