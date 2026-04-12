@@ -3,44 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stickman Parkour PRO+</title>
+<title>Stickman Parkour ULTRA</title>
 <style>
 body{margin:0;overflow:hidden;background:#0b0f1a;font-family:Arial;color:white}
 canvas{display:block}
 
-/* LOGIN */
-#menu{
+#menu,#shop{
  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
  background:#0b0f1a;z-index:10
 }
-input,select{
- padding:10px;margin:10px;border-radius:10px;border:none
-}
-button{
- padding:12px 20px;border:none;border-radius:20px;
- background:linear-gradient(45deg,#00ccff,#00ff99);
- color:black;font-weight:bold;cursor:pointer
-}
+#shop{display:none}
 
-/* PROGRESO */
-#progressContainer{
- position:fixed;top:10px;left:50%;transform:translateX(-50%);
- width:70%;height:15px;background:rgba(255,255,255,0.1);
- border-radius:20px;overflow:hidden
+input,select,button{
+ padding:10px;margin:8px;border-radius:10px;border:none
 }
-#progressBar{
- height:100%;width:0%;
- background:linear-gradient(90deg,#00ffcc,#00aaff)
-}
-#progressText{
- position:fixed;top:30px;left:50%;transform:translateX(-50%);
- font-size:14px;opacity:0.8
-}
+button{cursor:pointer;background:#00ffaa}
 
-#ui{
- position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;
- background:radial-gradient(circle,#1a0000,#000)
-}
+#progressContainer{position:fixed;top:10px;left:50%;transform:translateX(-50%);width:70%;height:15px;background:#222;border-radius:20px;overflow:hidden}
+#progressBar{height:100%;width:0%;background:#00ffaa}
+#progressText{position:fixed;top:30px;left:50%;transform:translateX(-50%)}
+
+#coins{position:fixed;top:10px;right:10px}
+
+#ui{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:#000}
 </style>
 </head>
 <body>
@@ -48,22 +33,26 @@ button{
 <div id="menu">
  <h1>Stickman Parkour</h1>
  <input id="name" placeholder="Tu nombre">
- <select id="skin">
-  <option value="white">Blanco</option>
-  <option value="cyan">Cyan</option>
-  <option value="yellow">Amarillo</option>
-  <option value="red">Rojo</option>
- </select>
+ <button onclick="openShop()">Tienda</button>
  <button onclick="startGame()">Jugar</button>
+</div>
+
+<div id="shop">
+ <h2>Tienda de Skins</h2>
+ <button onclick="buySkin('cyan',50)">Cyan - 50💰</button>
+ <button onclick="buySkin('yellow',100)">Amarillo - 100💰</button>
+ <button onclick="buySkin('red',150)">Rojo - 150💰</button>
+ <button onclick="closeShop()">Volver</button>
 </div>
 
 <div id="progressContainer"><div id="progressBar"></div></div>
 <div id="progressText">0%</div>
+<div id="coins">💰 0</div>
 
 <canvas id="game"></canvas>
 
 <div id="ui">
- <h1 id="endText">GAME OVER</h1>
+ <h1 id="endText"></h1>
  <button onclick="restart()">Reiniciar</button>
 </div>
 
@@ -74,156 +63,138 @@ const ctx=canvas.getContext("2d");
 function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
 resize();window.addEventListener("resize",resize);
 
-let playerName="";
+let playerName=localStorage.getItem("name")||"";
+let coins=parseInt(localStorage.getItem("coins")||0);
+let best=parseInt(localStorage.getItem("best")||0);
+let ownedSkins=JSON.parse(localStorage.getItem("skins")||'["white"]');
 let skin="white";
-let gameStarted=false;
 
-let keys={},gameOver=false,cameraX=0;
+let gameStarted=false,gameOver=false;
+let keys={},cameraX=0,finishX=4000;
 let gravity=0.6;
-let finishX=5000;
 
-let player={
- x:100,y:0,width:20,height:50,
- dx:0,dy:0,speed:0.5,maxSpeed:7,friction:0.85,
- jumping:false,frame:0
-};
-
-let platforms=[],obstacles=[];
-let lastX=0;
+let player={x:100,y:0,width:20,height:50,dx:0,dy:0,jumping:false,frame:0};
+let platforms=[],obstacles=[],lastX=0;
 
 function startGame(){
- playerName=document.getElementById("name").value || "Jugador";
- skin=document.getElementById("skin").value;
+ playerName=document.getElementById("name").value||"Jugador";
+ localStorage.setItem("name",playerName);
+ resetGame();
  document.getElementById("menu").style.display="none";
  gameStarted=true;
 }
 
+function resetGame(){
+ gameOver=false;
+ player.x=100;player.dx=0;player.dy=0;
+ platforms=[];obstacles=[];lastX=0;
+ generate();
+ player.y=platforms[0].y-player.height;
+}
+
 function generate(){
- for(let i=0;i<6;i++){
+ for(let i=0;i<5;i++){
   let x=lastX+i*200;
   let y=canvas.height-(150+Math.random()*120);
   platforms.push({x,y,width:150,height:20});
-  if(Math.random()<0.5){
-   obstacles.push({x:x+80,y:y-30,size:30});
-  }
+  if(Math.random()<0.4) obstacles.push({x:x+80,y:y-30,size:30});
  }
- lastX+=6*200;
+ lastX+=5*200;
 }
-
-generate();
-player.y=platforms[0].y-player.height;
 
 function updateProgress(){
- let progress=Math.min(player.x/finishX,1);
- let percent=Math.floor(progress*100);
- document.getElementById("progressBar").style.width=percent+"%";
- document.getElementById("progressText").innerText=percent+"%";
+ let p=Math.min(player.x/finishX,1);
+ let per=Math.floor(p*100);
+ document.getElementById("progressBar").style.width=per+"%";
+ document.getElementById("progressText").innerText=per+"%";
 }
 
-function drawPlayer(p){
- let px=p.x-cameraX;
- let swing=Math.sin(p.frame*0.3)*10;
-
+function drawPlayer(){
+ let px=player.x-cameraX;
  ctx.strokeStyle=skin;
- ctx.lineWidth=2;
-
- ctx.beginPath();ctx.arc(px+10,p.y-10,10,0,Math.PI*2);ctx.stroke();
- ctx.beginPath();ctx.moveTo(px+10,p.y);ctx.lineTo(px+10,p.y+25);ctx.stroke();
-
- ctx.beginPath();
- ctx.moveTo(px+10,p.y+10);
- ctx.lineTo(px-5+swing,p.y+20);
- ctx.moveTo(px+10,p.y+10);
- ctx.lineTo(px+25-swing,p.y+20);
- ctx.stroke();
-
- ctx.beginPath();
- ctx.moveTo(px+10,p.y+25);
- ctx.lineTo(px-5-swing,p.y+45);
- ctx.moveTo(px+10,p.y+25);
- ctx.lineTo(px+25+swing,p.y+45);
- ctx.stroke();
-
- ctx.fillStyle="white";
- ctx.fillText(playerName,px-20,p.y-30);
+ ctx.beginPath();ctx.arc(px+10,player.y-10,10,0,Math.PI*2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(px+10,player.y);ctx.lineTo(px+10,player.y+25);ctx.stroke();
+ ctx.fillText(playerName,px-20,player.y-30);
 }
 
 function update(){
- if(!gameStarted || gameOver)return;
+ if(!gameStarted||gameOver)return;
 
- player.frame++;
+ if(keys.ArrowRight) player.dx+=0.5;
+ if(keys.ArrowLeft) player.dx-=0.5;
 
- if(keys["ArrowRight"]) player.dx+=player.speed;
- if(keys["ArrowLeft"]) player.dx-=player.speed;
-
- player.dx=Math.max(-player.maxSpeed,Math.min(player.maxSpeed,player.dx));
- player.dx*=player.friction;
-
+ player.dx*=0.85;
  player.x+=player.dx;
- cameraX=player.x-canvas.width/3;
+ cameraX=player.x-200;
 
  player.dy+=gravity;
  player.y+=player.dy;
 
  player.jumping=true;
-
  for(let p of platforms){
-  if(player.x<p.x+p.width && player.x+player.width>p.x &&
-     player.y+player.height<p.y+10 && player.y+player.height+player.dy>=p.y){
+  if(player.x<p.x+p.width&&player.x+player.width>p.x&&player.y+player.height<p.y+10&&player.y+player.height+player.dy>=p.y){
    player.y=p.y-player.height;
-   player.dy=0;
-   player.jumping=false;
+   player.dy=0;player.jumping=false;
   }
  }
 
  for(let o of obstacles){
-  if(player.x<o.x+o.size && player.x+player.width>o.x &&
-     player.y<o.y+o.size && player.y+player.height>o.y){
-   endGame();
-  }
+  if(player.x<o.x+o.size&&player.x+player.width>o.x&&player.y<o.y+o.size&&player.y+player.height>o.y){endGame(false)}
  }
 
- if(player.y>canvas.height) endGame();
-
- if(player.x>lastX-500) generate();
+ if(player.y>canvas.height) endGame(false);
+ if(player.x>lastX-400) generate();
+ if(player.x>=finishX) endGame(true);
 
  updateProgress();
+ document.getElementById("coins").innerText="💰 "+coins;
 }
 
 function draw(){
- ctx.fillStyle="#0f2027";
- ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle="#111";ctx.fillRect(0,0,canvas.width,canvas.height);
 
- for(let p of platforms){
-  ctx.fillStyle="#00ff99";
-  ctx.fillRect(p.x-cameraX,p.y,p.width,p.height);
- }
-
- for(let o of obstacles){
-  ctx.fillStyle="red";
-  ctx.fillRect(o.x-cameraX,o.y,o.size,o.size);
- }
-
- drawPlayer(player);
+ for(let p of platforms){ctx.fillStyle="#00ffaa";ctx.fillRect(p.x-cameraX,p.y,p.width,p.height)}
+ for(let o of obstacles){ctx.fillStyle="red";ctx.fillRect(o.x-cameraX,o.y,o.size,o.size)}
+ drawPlayer();
 }
 
 function loop(){update();draw();requestAnimationFrame(loop)}
 
-function endGame(){
+function endGame(win){
  gameOver=true;
+ if(win){
+  coins+=50;
+  document.getElementById("endText").innerText="🏆 GANASTE +50💰";
+ }else{
+  document.getElementById("endText").innerText="💀 PERDISTE";
+ }
+ best=Math.max(best,Math.floor(player.x));
+ localStorage.setItem("best",best);
+ localStorage.setItem("coins",coins);
  document.getElementById("ui").style.display="flex";
 }
 
 function restart(){location.reload()}
 
+function openShop(){document.getElementById("menu").style.display="none";document.getElementById("shop").style.display="flex"}
+function closeShop(){document.getElementById("shop").style.display="none";document.getElementById("menu").style.display="flex"}
+
+function buySkin(color,price){
+ if(coins>=price&&!ownedSkins.includes(color)){
+  coins-=price;ownedSkins.push(color);
+  localStorage.setItem("skins",JSON.stringify(ownedSkins));
+ }
+ skin=color;
+}
+
 window.addEventListener("keydown",e=>{
- if(e.code==="ArrowRight") keys["ArrowRight"]=true;
- if(e.code==="ArrowLeft") keys["ArrowLeft"]=true;
+ if(e.code==="ArrowRight") keys.ArrowRight=true;
+ if(e.code==="ArrowLeft") keys.ArrowLeft=true;
  if(e.code==="Space"&&!player.jumping) player.dy=-12;
 });
 window.addEventListener("keyup",e=>{
- if(e.code==="ArrowRight") keys["ArrowRight"]=false;
- if(e.code==="ArrowLeft") keys["ArrowLeft"]=false;
+ if(e.code==="ArrowRight") keys.ArrowRight=false;
+ if(e.code==="ArrowLeft") keys.ArrowLeft=false;
 });
 
 loop();
