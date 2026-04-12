@@ -3,31 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stickman Parkour PRO</title>
+<title>Stickman Parkour PRO+</title>
 <style>
-body{margin:0;overflow:hidden;background:#0b0f1a;font-family:Arial}
+body{margin:0;overflow:hidden;background:#0b0f1a;font-family:Arial;color:white}
 canvas{display:block}
+
+/* LOGIN */
+#menu{
+ position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ background:#0b0f1a;z-index:10
+}
+input,select{
+ padding:10px;margin:10px;border-radius:10px;border:none
+}
+button{
+ padding:12px 20px;border:none;border-radius:20px;
+ background:linear-gradient(45deg,#00ccff,#00ff99);
+ color:black;font-weight:bold;cursor:pointer
+}
+
+/* PROGRESO */
+#progressContainer{
+ position:fixed;top:10px;left:50%;transform:translateX(-50%);
+ width:70%;height:15px;background:rgba(255,255,255,0.1);
+ border-radius:20px;overflow:hidden
+}
+#progressBar{
+ height:100%;width:0%;
+ background:linear-gradient(90deg,#00ffcc,#00aaff)
+}
+#progressText{
+ position:fixed;top:30px;left:50%;transform:translateX(-50%);
+ font-size:14px;opacity:0.8
+}
 
 #ui{
  position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;
- background:radial-gradient(circle,#1a0000,#000);color:white;text-align:center
-}
-
-button{
- padding:14px 28px;border:none;border-radius:25px;
- background:linear-gradient(45deg,#ff0000,#ff8800);
- color:white;font-size:18px;cursor:pointer;
- box-shadow:0 0 15px rgba(255,0,0,0.5)
-}
-
-#score{
- position:fixed;top:10px;left:10px;color:white;font-size:18px;opacity:0.8
+ background:radial-gradient(circle,#1a0000,#000)
 }
 </style>
 </head>
 <body>
 
-<div id="score">0 m</div>
+<div id="menu">
+ <h1>Stickman Parkour</h1>
+ <input id="name" placeholder="Tu nombre">
+ <select id="skin">
+  <option value="white">Blanco</option>
+  <option value="cyan">Cyan</option>
+  <option value="yellow">Amarillo</option>
+  <option value="red">Rojo</option>
+ </select>
+ <button onclick="startGame()">Jugar</button>
+</div>
+
+<div id="progressContainer"><div id="progressBar"></div></div>
+<div id="progressText">0%</div>
+
 <canvas id="game"></canvas>
 
 <div id="ui">
@@ -42,8 +74,13 @@ const ctx=canvas.getContext("2d");
 function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
 resize();window.addEventListener("resize",resize);
 
+let playerName="";
+let skin="white";
+let gameStarted=false;
+
 let keys={},gameOver=false,cameraX=0;
 let gravity=0.6;
+let finishX=5000;
 
 let player={
  x:100,y:0,width:20,height:50,
@@ -54,13 +91,18 @@ let player={
 let platforms=[],obstacles=[];
 let lastX=0;
 
+function startGame(){
+ playerName=document.getElementById("name").value || "Jugador";
+ skin=document.getElementById("skin").value;
+ document.getElementById("menu").style.display="none";
+ gameStarted=true;
+}
+
 function generate(){
  for(let i=0;i<6;i++){
   let x=lastX+i*200;
   let y=canvas.height-(150+Math.random()*120);
-
   platforms.push({x,y,width:150,height:20});
-
   if(Math.random()<0.5){
    obstacles.push({x:x+80,y:y-30,size:30});
   }
@@ -71,38 +113,22 @@ function generate(){
 generate();
 player.y=platforms[0].y-player.height;
 
-function drawBackground(){
- let g=ctx.createLinearGradient(0,0,0,canvas.height);
- g.addColorStop(0,"#0f2027");
- g.addColorStop(1,"#203a43");
- ctx.fillStyle=g;
- ctx.fillRect(0,0,canvas.width,canvas.height);
-
- // estrellas
- ctx.fillStyle="white";
- for(let i=0;i<50;i++){
-  let x=(i*200-cameraX*0.2)%canvas.width;
-  let y=(i*50)%canvas.height;
-  ctx.fillRect(x,y,2,2);
- }
+function updateProgress(){
+ let progress=Math.min(player.x/finishX,1);
+ let percent=Math.floor(progress*100);
+ document.getElementById("progressBar").style.width=percent+"%";
+ document.getElementById("progressText").innerText=percent+"%";
 }
 
 function drawPlayer(p){
  let px=p.x-cameraX;
- let speed=Math.abs(p.dx);
- let swing=Math.sin(p.frame*0.3)*(speed>0.5?10:3);
+ let swing=Math.sin(p.frame*0.3)*10;
 
- ctx.strokeStyle="white";
+ ctx.strokeStyle=skin;
  ctx.lineWidth=2;
 
- ctx.beginPath();
- ctx.arc(px+10,p.y-10,10,0,Math.PI*2);
- ctx.stroke();
-
- ctx.beginPath();
- ctx.moveTo(px+10,p.y);
- ctx.lineTo(px+10,p.y+25);
- ctx.stroke();
+ ctx.beginPath();ctx.arc(px+10,p.y-10,10,0,Math.PI*2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(px+10,p.y);ctx.lineTo(px+10,p.y+25);ctx.stroke();
 
  ctx.beginPath();
  ctx.moveTo(px+10,p.y+10);
@@ -117,44 +143,13 @@ function drawPlayer(p){
  ctx.moveTo(px+10,p.y+25);
  ctx.lineTo(px+25+swing,p.y+45);
  ctx.stroke();
-}
 
-function drawPlatforms(){
- for(let p of platforms){
-  let px=p.x-cameraX;
-
-  ctx.fillStyle="rgba(0,0,0,0.4)";
-  ctx.fillRect(px+5,p.y+5,p.width,p.height);
-
-  let g=ctx.createLinearGradient(px,p.y,px,p.y+p.height);
-  g.addColorStop(0,"#00ffcc");
-  g.addColorStop(1,"#006666");
-
-  ctx.fillStyle=g;
-  ctx.fillRect(px,p.y,p.width,p.height);
- }
-}
-
-function drawObstacles(){
- for(let o of obstacles){
-  let px=o.x-cameraX;
-
-  ctx.shadowColor="red";
-  ctx.shadowBlur=15;
-
-  ctx.fillStyle="#ff4444";
-  ctx.beginPath();
-  ctx.moveTo(px,o.y+o.size);
-  ctx.lineTo(px+o.size/2,o.y);
-  ctx.lineTo(px+o.size,o.y+o.size);
-  ctx.fill();
-
-  ctx.shadowBlur=0;
- }
+ ctx.fillStyle="white";
+ ctx.fillText(playerName,px-20,p.y-30);
 }
 
 function update(){
- if(gameOver)return;
+ if(!gameStarted || gameOver)return;
 
  player.frame++;
 
@@ -192,13 +187,23 @@ function update(){
 
  if(player.x>lastX-500) generate();
 
- document.getElementById("score").innerText = Math.floor(player.x/10)+" m";
+ updateProgress();
 }
 
 function draw(){
- drawBackground();
- drawPlatforms();
- drawObstacles();
+ ctx.fillStyle="#0f2027";
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ for(let p of platforms){
+  ctx.fillStyle="#00ff99";
+  ctx.fillRect(p.x-cameraX,p.y,p.width,p.height);
+ }
+
+ for(let o of obstacles){
+  ctx.fillStyle="red";
+  ctx.fillRect(o.x-cameraX,o.y,o.size,o.size);
+ }
+
  drawPlayer(player);
 }
 
@@ -216,7 +221,6 @@ window.addEventListener("keydown",e=>{
  if(e.code==="ArrowLeft") keys["ArrowLeft"]=true;
  if(e.code==="Space"&&!player.jumping) player.dy=-12;
 });
-
 window.addEventListener("keyup",e=>{
  if(e.code==="ArrowRight") keys["ArrowRight"]=false;
  if(e.code==="ArrowLeft") keys["ArrowLeft"]=false;
