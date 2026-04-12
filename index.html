@@ -1,76 +1,58 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Stickman Parkour Mobile</title>
+  <title>Stickman Parkour Estético Pro</title>
   <style>
     body { margin:0; overflow:hidden; font-family:Arial; background:#0b0f1a; }
-    canvas { display:block; }/* CONTROLES MÓVIL */
-#controls {
-  position: fixed;
-  bottom: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  pointer-events: none;
-}
+    canvas { display:block; }
 
-.btn {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(5px);
-  color: white;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto;
-  user-select: none;
-}
+    #progressContainer {
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 80%; height: 15px; background: rgba(255,255,255,0.1);
+      border-radius: 20px; overflow: hidden;
+    }
+    #progressBar { height:100%; width:0%; background: linear-gradient(90deg,#00ffcc,#00aaff); }
 
-#progressContainer {
-  position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
-  width: 80%; height: 15px; background: rgba(255,255,255,0.1);
-  border-radius: 20px; overflow: hidden;
-}
-#progressBar { height:100%; width:0%; background: linear-gradient(90deg,#00ffcc,#00aaff); }
+    #controls {
+      position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: space-around;
+    }
+    .btn {
+      width: 70px; height: 70px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); color: white; font-size: 24px;
+      display: flex; align-items: center; justify-content: center;
+    }
 
-#ui {
-  position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
-  background: radial-gradient(circle at center, #1a0000, #000);
-  color: white; text-align: center;
-}
-
-button {
-  padding:14px 28px; border:none; border-radius:30px;
-  font-size:18px; cursor:pointer;
-  background:linear-gradient(45deg,#ff0000,#ff8800);
-  color:white;
-}
-
+    #ui {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
+      background: radial-gradient(circle at center, #1a0000, #000);
+      color: white;
+    }
   </style>
 </head>
-<body><div id="progressContainer"><div id="progressBar"></div></div><canvas id="game"></canvas>
+<body>
+
+<div id="progressContainer"><div id="progressBar"></div></div>
+
+<canvas id="game"></canvas>
 
 <div id="controls">
   <div class="btn" id="left">⬅️</div>
   <div class="btn" id="jump">⬆️</div>
   <div class="btn" id="right">➡️</div>
-</div><div id="ui">
+</div>
+
+<div id="ui">
   <h1 id="endText">💀 GAME OVER 💀</h1>
-  <button onclick="restart()">🔁 Reiniciar</button>
-</div><script>
+</div>
+
+<script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-function resize(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
+function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+resize(); window.addEventListener("resize", resize);
 
 let gravity = 0.6;
 let gameOver = false;
@@ -92,12 +74,11 @@ let lastGeneratedX = 0;
 function generateWorld() {
   for (let i = 0; i < 6; i++) {
     let x = lastGeneratedX + i * 180;
-    let heights = [canvas.height-150, canvas.height-180, canvas.height-200];
-    let y = heights[Math.floor(Math.random()*heights.length)];
+    let y = canvas.height - (150 + Math.random()*80);
 
     platforms.push({x, y, width: 140, height: 20});
 
-    if (Math.random() < 0.4) {
+    if (Math.random() < 0.5) {
       obstacles.push({x: x + 70, y: y - 30, size: 30});
     }
   }
@@ -112,8 +93,76 @@ function updateProgress(){
   document.getElementById("progressBar").style.width = (progress*100)+"%";
 }
 
+function drawStickman(p) {
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
+
+  let px = p.x - cameraX;
+
+  let speed = Math.abs(p.dx);
+
+  let swing = Math.sin(p.frame * 0.4) * (speed > 0.5 ? 15 : 5);
+  let idleDance = Math.sin(p.frame * 0.1) * 5;
+
+  // cabeza
+  ctx.beginPath();
+  ctx.arc(px + 10, p.y - 10 + (speed<0.5?idleDance:0), 10, 0, Math.PI*2);
+  ctx.stroke();
+
+  // cuerpo
+  ctx.beginPath();
+  ctx.moveTo(px+10, p.y);
+  ctx.lineTo(px+10, p.y+25);
+  ctx.stroke();
+
+  // brazos
+  ctx.beginPath();
+  ctx.moveTo(px+10, p.y+10);
+  ctx.lineTo(px-5+swing, p.y+20);
+  ctx.moveTo(px+10, p.y+10);
+  ctx.lineTo(px+25-swing, p.y+20);
+  ctx.stroke();
+
+  // piernas
+  ctx.beginPath();
+  ctx.moveTo(px+10, p.y+25);
+  ctx.lineTo(px-5-swing, p.y+45);
+  ctx.moveTo(px+10, p.y+25);
+  ctx.lineTo(px+25+swing, p.y+45);
+  ctx.stroke();
+
+  ctx.fillStyle="white";
+  ctx.fillText("pinto vrg",px-20,p.y-30);
+}
+
+function drawObstacles(){
+  for(let obs of obstacles){
+    let px = obs.x - cameraX;
+
+    // brillo
+    ctx.shadowColor = "red";
+    ctx.shadowBlur = 20;
+
+    let grad = ctx.createLinearGradient(px,obs.y,px,obs.y+obs.size);
+    grad.addColorStop(0,"#ff5555");
+    grad.addColorStop(1,"#550000");
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(px,obs.y+obs.size);
+    ctx.lineTo(px+obs.size/2,obs.y);
+    ctx.lineTo(px+obs.size,obs.y+obs.size);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+  }
+}
+
 function update(){
   if(gameOver) return;
+
+  player.frame++;
 
   if(keys["right"]) player.dx += player.speed;
   if(keys["left"]) player.dx -= player.speed;
@@ -154,24 +203,16 @@ function update(){
 }
 
 function draw(){
-  ctx.fillStyle = "#0f2027";
+  ctx.fillStyle="#0f2027";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
   for(let plat of platforms){
-    ctx.fillStyle = "#00ff99";
+    ctx.fillStyle="#00ff99";
     ctx.fillRect(plat.x-cameraX, plat.y, plat.width, plat.height);
   }
 
-  for(let obs of obstacles){
-    ctx.fillStyle = "red";
-    ctx.fillRect(obs.x-cameraX, obs.y, obs.size, obs.size);
-  }
-
-  ctx.fillStyle = "gold";
-  ctx.fillRect(finishX-cameraX, canvas.height-250, 20, 200);
-
-  ctx.fillStyle="white";
-  ctx.fillRect(player.x-cameraX, player.y, player.width, player.height);
+  drawObstacles();
+  drawStickman(player);
 }
 
 function loop(){ update(); draw(); requestAnimationFrame(loop); }
@@ -182,55 +223,22 @@ function endGame(victory){
   document.getElementById("ui").style.display="flex";
 }
 
-function restart(){ location.reload(); }
-
-// teclado
-window.addEventListener("keydown",e=>{
-  if(e.code==="ArrowRight") keys["right"]=true;
-  if(e.code==="ArrowLeft") keys["left"]=true;
-  if(e.code==="Space"&&!player.jumping) player.dy=-12;
-});
-window.addEventListener("keyup",e=>{
-  if(e.code==="ArrowRight") keys["right"]=false;
-  if(e.code==="ArrowLeft") keys["left"]=false;
-});
-
-// móvil (MEJORADO)
+// controles
 function bindBtn(id, key){
   let btn = document.getElementById(id);
-
-  btn.addEventListener("touchstart",(e)=>{
-    e.preventDefault();
-    keys[key]=true;
-  }, {passive:false});
-
-  btn.addEventListener("touchend",(e)=>{
-    e.preventDefault();
-    keys[key]=false;
-  }, {passive:false});
-
-  // también soporte click por si acaso
-  btn.addEventListener("mousedown",()=> keys[key]=true);
-  btn.addEventListener("mouseup",()=> keys[key]=false);
+  btn.addEventListener("touchstart",e=>{e.preventDefault(); keys[key]=true;},{passive:false});
+  btn.addEventListener("touchend",e=>{e.preventDefault(); keys[key]=false;},{passive:false});
 }
 
 bindBtn("left","left");
 bindBtn("right","right");
 
-let jumpBtn = document.getElementById("jump");
-
-jumpBtn.addEventListener("touchstart",(e)=>{
+document.getElementById("jump").addEventListener("touchstart",e=>{
   e.preventDefault();
   if(!player.jumping) player.dy=-12;
-}, {passive:false});
-
-jumpBtn.addEventListener("mousedown",()=>{
-  if(!player.jumping) player.dy=-12;
-});
-
-// evitar scroll en móvil
-window.addEventListener("touchmove", e => e.preventDefault(), { passive:false });
+},{passive:false});
 
 loop();
-</script></body>
+</script>
+</body>
 </html>
