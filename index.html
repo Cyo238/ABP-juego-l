@@ -113,17 +113,33 @@ let platforms=[],obstacles=[],lastX=0;
 
 function startGame(){
  playerName=document.getElementById("name").value||"Jugador";
+ 
+ // guardar nombre
+ localStorage.setItem("playerName", playerName);
+ 
  resetGame();
  document.getElementById("menu").style.display="none";
+ document.getElementById("ui").style.display="none";
+ gameOver=false;
  gameStarted=true;
 }
 
 function resetGame(){
  gameOver=false;
- player.x=100;player.dx=0;player.dy=0;
- platforms=[];obstacles=[];lastX=0;
+ player.x=100;
+ player.dx=0;
+ player.dy=0;
+ 
+ platforms=[];
+ obstacles=[];
+ lastX=0;
+ 
  generate();
- player.y=platforms[0].y-player.height;
+ 
+ // asegurar que SIEMPRE empiece en plataforma
+ if(platforms.length>0){
+   player.y=platforms[0].y-player.height;
+ }
 }
 
 function generate(){
@@ -206,7 +222,13 @@ function loop(){update();draw();requestAnimationFrame(loop)}
 
 function endGame(win){
  gameOver=true;
- document.getElementById("endText").innerText=win?"🏆 GANASTE":"💀 PERDISTE";
+ 
+ document.getElementById("endText").innerText = win ? "🏆 GANASTE" : "💀 PERDISTE";
+ 
+ // mantener nombre visible
+ document.getElementById("endText").innerText += "
+Jugador: " + playerName;
+ 
  document.getElementById("ui").style.display="flex";
 }
 
