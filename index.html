@@ -12,7 +12,7 @@ canvas{display:block}
 #menu{
  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
- text-align:center
+ text-align:center;z-index:5
 }
 #menu h1{
  font-size:48px;
@@ -27,8 +27,11 @@ canvas{display:block}
 }
 
 input,button{
- padding:12px;margin:10px;border-radius:10px;border:none
+ background:linear-gradient(45deg,#00ccff,#00ffcc);
+ cursor:pointer;font-weight:bold;
+ transition:transform 0.15s ease, box-shadow 0.15s ease;
 }
+button:active{transform:scale(0.95);box-shadow:0 0 10px #00ffff;}
 button{
  background:linear-gradient(45deg,#00ccff,#00ffcc);
  cursor:pointer;font-weight:bold
@@ -37,7 +40,7 @@ button{
 /* TIENDA */
 #shop{
  position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
- background:#0b0f1a
+ background:#0b0f1a;z-index:6
 }
 .skin{
  margin:10px;padding:15px;border-radius:15px;
@@ -90,7 +93,7 @@ button{
 <div id="progressText">0%</div>
 <div id="coins">💰 0</div>
 
-<canvas id="game"></canvas>
+<canvas id="game" style="position:fixed;inset:0;z-index:0"></canvas>
 
 <div id="ui">
  <h1 id="endText"></h1>
