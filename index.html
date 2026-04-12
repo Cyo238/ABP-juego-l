@@ -1,242 +1,226 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Stickman Parkour Estético Pro</title>
-  <style>
-    body { margin:0; overflow:hidden; font-family:Arial; background:#0b0f1a; }
-    canvas { display:block; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stickman Parkour PRO</title>
+<style>
+body{margin:0;overflow:hidden;background:#0b0f1a;font-family:Arial}
+canvas{display:block}
 
-    #progressContainer {
-      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
-      width: 80%; height: 15px; background: rgba(255,255,255,0.1);
-      border-radius: 20px; overflow: hidden;
-    }
-    #progressBar { height:100%; width:0%; background: linear-gradient(90deg,#00ffcc,#00aaff); }
+#ui{
+ position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;
+ background:radial-gradient(circle,#1a0000,#000);color:white;text-align:center
+}
 
-    #controls {
-      position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: space-around;
-    }
-    .btn {
-      width: 70px; height: 70px; border-radius: 50%;
-      background: rgba(255,255,255,0.1); color: white; font-size: 24px;
-      display: flex; align-items: center; justify-content: center;
-    }
+button{
+ padding:14px 28px;border:none;border-radius:25px;
+ background:linear-gradient(45deg,#ff0000,#ff8800);
+ color:white;font-size:18px;cursor:pointer;
+ box-shadow:0 0 15px rgba(255,0,0,0.5)
+}
 
-    #ui {
-      position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
-      background: radial-gradient(circle at center, #1a0000, #000);
-      color: white;
-    }
-  </style>
+#score{
+ position:fixed;top:10px;left:10px;color:white;font-size:18px;opacity:0.8
+}
+</style>
 </head>
 <body>
 
-<div id="progressContainer"><div id="progressBar"></div></div>
-
+<div id="score">0 m</div>
 <canvas id="game"></canvas>
 
-<div id="controls">
-  <div class="btn" id="left">⬅️</div>
-  <div class="btn" id="jump">⬆️</div>
-  <div class="btn" id="right">➡️</div>
-</div>
-
 <div id="ui">
-  <h1 id="endText">💀 GAME OVER 💀</h1>
+ <h1 id="endText">GAME OVER</h1>
+ <button onclick="restart()">Reiniciar</button>
 </div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
 
-function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-resize(); window.addEventListener("resize", resize);
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
+resize();window.addEventListener("resize",resize);
 
-let gravity = 0.6;
-let gameOver = false;
-let cameraX = 0;
-let finishX = 3000;
+let keys={},gameOver=false,cameraX=0;
+let gravity=0.6;
 
-let keys = {};
-
-let player = {
-  x: 100, y: 0, width: 20, height: 50,
-  dx: 0, dy: 0, speed: 0.5, maxSpeed: 6, friction: 0.85,
-  jumping: false, frame: 0
+let player={
+ x:100,y:0,width:20,height:50,
+ dx:0,dy:0,speed:0.5,maxSpeed:7,friction:0.85,
+ jumping:false,frame:0
 };
 
-let platforms = [];
-let obstacles = [];
-let lastGeneratedX = 0;
+let platforms=[],obstacles=[];
+let lastX=0;
 
-function generateWorld() {
-  for (let i = 0; i < 6; i++) {
-    let x = lastGeneratedX + i * 180;
-    let y = canvas.height - (150 + Math.random()*80);
+function generate(){
+ for(let i=0;i<6;i++){
+  let x=lastX+i*200;
+  let y=canvas.height-(150+Math.random()*120);
 
-    platforms.push({x, y, width: 140, height: 20});
+  platforms.push({x,y,width:150,height:20});
 
-    if (Math.random() < 0.5) {
-      obstacles.push({x: x + 70, y: y - 30, size: 30});
-    }
+  if(Math.random()<0.5){
+   obstacles.push({x:x+80,y:y-30,size:30});
   }
-  lastGeneratedX += 6 * 180;
+ }
+ lastX+=6*200;
 }
 
-generateWorld();
-player.y = platforms[0].y - player.height;
+generate();
+player.y=platforms[0].y-player.height;
 
-function updateProgress(){
-  let progress = Math.min(player.x/finishX,1);
-  document.getElementById("progressBar").style.width = (progress*100)+"%";
+function drawBackground(){
+ let g=ctx.createLinearGradient(0,0,0,canvas.height);
+ g.addColorStop(0,"#0f2027");
+ g.addColorStop(1,"#203a43");
+ ctx.fillStyle=g;
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ // estrellas
+ ctx.fillStyle="white";
+ for(let i=0;i<50;i++){
+  let x=(i*200-cameraX*0.2)%canvas.width;
+  let y=(i*50)%canvas.height;
+  ctx.fillRect(x,y,2,2);
+ }
 }
 
-function drawStickman(p) {
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 3;
+function drawPlayer(p){
+ let px=p.x-cameraX;
+ let speed=Math.abs(p.dx);
+ let swing=Math.sin(p.frame*0.3)*(speed>0.5?10:3);
 
-  let px = p.x - cameraX;
+ ctx.strokeStyle="white";
+ ctx.lineWidth=2;
 
-  let speed = Math.abs(p.dx);
+ ctx.beginPath();
+ ctx.arc(px+10,p.y-10,10,0,Math.PI*2);
+ ctx.stroke();
 
-  let swing = Math.sin(p.frame * 0.4) * (speed > 0.5 ? 15 : 5);
-  let idleDance = Math.sin(p.frame * 0.1) * 5;
+ ctx.beginPath();
+ ctx.moveTo(px+10,p.y);
+ ctx.lineTo(px+10,p.y+25);
+ ctx.stroke();
 
-  // cabeza
-  ctx.beginPath();
-  ctx.arc(px + 10, p.y - 10 + (speed<0.5?idleDance:0), 10, 0, Math.PI*2);
-  ctx.stroke();
+ ctx.beginPath();
+ ctx.moveTo(px+10,p.y+10);
+ ctx.lineTo(px-5+swing,p.y+20);
+ ctx.moveTo(px+10,p.y+10);
+ ctx.lineTo(px+25-swing,p.y+20);
+ ctx.stroke();
 
-  // cuerpo
-  ctx.beginPath();
-  ctx.moveTo(px+10, p.y);
-  ctx.lineTo(px+10, p.y+25);
-  ctx.stroke();
+ ctx.beginPath();
+ ctx.moveTo(px+10,p.y+25);
+ ctx.lineTo(px-5-swing,p.y+45);
+ ctx.moveTo(px+10,p.y+25);
+ ctx.lineTo(px+25+swing,p.y+45);
+ ctx.stroke();
+}
 
-  // brazos
-  ctx.beginPath();
-  ctx.moveTo(px+10, p.y+10);
-  ctx.lineTo(px-5+swing, p.y+20);
-  ctx.moveTo(px+10, p.y+10);
-  ctx.lineTo(px+25-swing, p.y+20);
-  ctx.stroke();
+function drawPlatforms(){
+ for(let p of platforms){
+  let px=p.x-cameraX;
 
-  // piernas
-  ctx.beginPath();
-  ctx.moveTo(px+10, p.y+25);
-  ctx.lineTo(px-5-swing, p.y+45);
-  ctx.moveTo(px+10, p.y+25);
-  ctx.lineTo(px+25+swing, p.y+45);
-  ctx.stroke();
+  ctx.fillStyle="rgba(0,0,0,0.4)";
+  ctx.fillRect(px+5,p.y+5,p.width,p.height);
 
-  ctx.fillStyle="white";
-  ctx.fillText("pinto vrg",px-20,p.y-30);
+  let g=ctx.createLinearGradient(px,p.y,px,p.y+p.height);
+  g.addColorStop(0,"#00ffcc");
+  g.addColorStop(1,"#006666");
+
+  ctx.fillStyle=g;
+  ctx.fillRect(px,p.y,p.width,p.height);
+ }
 }
 
 function drawObstacles(){
-  for(let obs of obstacles){
-    let px = obs.x - cameraX;
+ for(let o of obstacles){
+  let px=o.x-cameraX;
 
-    // brillo
-    ctx.shadowColor = "red";
-    ctx.shadowBlur = 20;
+  ctx.shadowColor="red";
+  ctx.shadowBlur=15;
 
-    let grad = ctx.createLinearGradient(px,obs.y,px,obs.y+obs.size);
-    grad.addColorStop(0,"#ff5555");
-    grad.addColorStop(1,"#550000");
+  ctx.fillStyle="#ff4444";
+  ctx.beginPath();
+  ctx.moveTo(px,o.y+o.size);
+  ctx.lineTo(px+o.size/2,o.y);
+  ctx.lineTo(px+o.size,o.y+o.size);
+  ctx.fill();
 
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(px,obs.y+obs.size);
-    ctx.lineTo(px+obs.size/2,obs.y);
-    ctx.lineTo(px+obs.size,obs.y+obs.size);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.shadowBlur = 0;
-  }
+  ctx.shadowBlur=0;
+ }
 }
 
 function update(){
-  if(gameOver) return;
+ if(gameOver)return;
 
-  player.frame++;
+ player.frame++;
 
-  if(keys["right"]) player.dx += player.speed;
-  if(keys["left"]) player.dx -= player.speed;
+ if(keys["ArrowRight"]) player.dx+=player.speed;
+ if(keys["ArrowLeft"]) player.dx-=player.speed;
 
-  player.dx = Math.max(-player.maxSpeed, Math.min(player.maxSpeed, player.dx));
-  player.dx *= player.friction;
+ player.dx=Math.max(-player.maxSpeed,Math.min(player.maxSpeed,player.dx));
+ player.dx*=player.friction;
 
-  player.x += player.dx;
-  cameraX = player.x - canvas.width/3;
+ player.x+=player.dx;
+ cameraX=player.x-canvas.width/3;
 
-  player.dy += gravity;
-  player.y += player.dy;
+ player.dy+=gravity;
+ player.y+=player.dy;
 
-  player.jumping = true;
+ player.jumping=true;
 
-  for(let plat of platforms){
-    if(player.x < plat.x+plat.width && player.x+player.width > plat.x &&
-       player.y+player.height < plat.y+10 && player.y+player.height+player.dy >= plat.y){
-      player.y = plat.y - player.height;
-      player.dy = 0;
-      player.jumping = false;
-    }
+ for(let p of platforms){
+  if(player.x<p.x+p.width && player.x+player.width>p.x &&
+     player.y+player.height<p.y+10 && player.y+player.height+player.dy>=p.y){
+   player.y=p.y-player.height;
+   player.dy=0;
+   player.jumping=false;
   }
+ }
 
-  for(let obs of obstacles){
-    if(player.x < obs.x+obs.size && player.x+player.width > obs.x &&
-       player.y < obs.y+obs.size && player.y+player.height > obs.y){
-      endGame(false);
-    }
+ for(let o of obstacles){
+  if(player.x<o.x+o.size && player.x+player.width>o.x &&
+     player.y<o.y+o.size && player.y+player.height>o.y){
+   endGame();
   }
+ }
 
-  if(player.y > canvas.height) endGame(false);
+ if(player.y>canvas.height) endGame();
 
-  if(player.x > lastGeneratedX - 400 && lastGeneratedX < finishX) generateWorld();
-  if(player.x >= finishX) endGame(true);
+ if(player.x>lastX-500) generate();
 
-  updateProgress();
+ document.getElementById("score").innerText = Math.floor(player.x/10)+" m";
 }
 
 function draw(){
-  ctx.fillStyle="#0f2027";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  for(let plat of platforms){
-    ctx.fillStyle="#00ff99";
-    ctx.fillRect(plat.x-cameraX, plat.y, plat.width, plat.height);
-  }
-
-  drawObstacles();
-  drawStickman(player);
+ drawBackground();
+ drawPlatforms();
+ drawObstacles();
+ drawPlayer(player);
 }
 
-function loop(){ update(); draw(); requestAnimationFrame(loop); }
+function loop(){update();draw();requestAnimationFrame(loop)}
 
-function endGame(victory){
-  gameOver=true;
-  document.getElementById("endText").innerText = victory?"🏆 GANASTE 🏆":"💀 GAME OVER 💀";
-  document.getElementById("ui").style.display="flex";
+function endGame(){
+ gameOver=true;
+ document.getElementById("ui").style.display="flex";
 }
 
-// controles
-function bindBtn(id, key){
-  let btn = document.getElementById(id);
-  btn.addEventListener("touchstart",e=>{e.preventDefault(); keys[key]=true;},{passive:false});
-  btn.addEventListener("touchend",e=>{e.preventDefault(); keys[key]=false;},{passive:false});
-}
+function restart(){location.reload()}
 
-bindBtn("left","left");
-bindBtn("right","right");
+window.addEventListener("keydown",e=>{
+ if(e.code==="ArrowRight") keys["ArrowRight"]=true;
+ if(e.code==="ArrowLeft") keys["ArrowLeft"]=true;
+ if(e.code==="Space"&&!player.jumping) player.dy=-12;
+});
 
-document.getElementById("jump").addEventListener("touchstart",e=>{
-  e.preventDefault();
-  if(!player.jumping) player.dy=-12;
-},{passive:false});
+window.addEventListener("keyup",e=>{
+ if(e.code==="ArrowRight") keys["ArrowRight"]=false;
+ if(e.code==="ArrowLeft") keys["ArrowLeft"]=false;
+});
 
 loop();
 </script>
