@@ -38,7 +38,29 @@ function generateMap(){
 }
 generateMap();
 
-/* CONTROLES MÓVIL */
+/* BOTONES MENU */
+document.getElementById("btnPlay").onclick = ()=>{
+ playerName = document.getElementById("name").value || "Jugador";
+ document.getElementById("menu").style.display="none";
+ gameStarted = true;
+};
+
+document.getElementById("btnShop").onclick = ()=>{
+ document.getElementById("menu").style.display="none";
+ document.getElementById("shop").style.display="flex";
+};
+
+document.getElementById("backMenu").onclick = ()=>{
+ document.getElementById("shop").style.display="none";
+ document.getElementById("menu").style.display="flex";
+};
+
+/* SKINS */
+document.querySelectorAll(".useSkin").forEach(btn=>{
+ btn.onclick = ()=> skin = btn.dataset.skin;
+});
+
+/* CONTROLES MOVIL */
 function addTouch(btn, key){
  btn.addEventListener("touchstart",(e)=>{
    e.preventDefault();
@@ -68,27 +90,6 @@ addEventListener("keyup",e=>{
  if(e.code==="ArrowRight") keys.ArrowRight=false;
  if(e.code==="ArrowLeft") keys.ArrowLeft=false;
 });
-
-/* UI */
-function startGame(){
- playerName = name.value || "Jugador";
- menu.style.display="none";
- gameStarted = true;
-}
-
-function openShop(){
- menu.style.display="none";
- shop.style.display="flex";
-}
-
-function closeShop(){
- shop.style.display="none";
- menu.style.display="flex";
-}
-
-function setSkin(s){
- skin = s;
-}
 
 /* UPDATE */
 function update(){
@@ -140,18 +141,15 @@ function drawStickman(px){
  ctx.strokeStyle="white";
  ctx.lineWidth=3;
 
- // cabeza
  ctx.beginPath();
  ctx.arc(px+10,player.y-10+idle,10,0,Math.PI*2);
  ctx.stroke();
 
- // cuerpo
  ctx.beginPath();
  ctx.moveTo(px+10,player.y);
  ctx.lineTo(px+10,player.y+25);
  ctx.stroke();
 
- // brazos
  ctx.beginPath();
  ctx.moveTo(px+10,player.y+10);
  ctx.lineTo(px-10+swing,player.y+20);
@@ -159,7 +157,6 @@ function drawStickman(px){
  ctx.lineTo(px+30-swing,player.y+20);
  ctx.stroke();
 
- // piernas
  ctx.beginPath();
  ctx.moveTo(px+10,player.y+25);
  ctx.lineTo(px-10-swing,player.y+50);
@@ -167,7 +164,7 @@ function drawStickman(px){
  ctx.lineTo(px+30+swing,player.y+50);
  ctx.stroke();
 
- // skins
+ // skins mejoradas
  if(skin==="pikachu"){
   ctx.fillStyle="yellow";
   ctx.fillRect(px,player.y,20,10);
@@ -189,8 +186,6 @@ function drawStickman(px){
 }
 
 function draw(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
-
  ctx.fillStyle="#0f2027";
  ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -202,7 +197,6 @@ function draw(){
  drawStickman(player.x-cameraX);
 }
 
-/* LOOP */
 function loop(){
  update();
  draw();
