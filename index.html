@@ -2,10 +2,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stickman Parkour PRO FINAL</title>
+<title>Stickman Parkour FINAL GOD</title>
 <style>
 body{margin:0;overflow:hidden;background:#0b0f1a;font-family:Arial;color:white}
 canvas{position:fixed;inset:0}/* MENU */ #menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);z-index:10} .menu-box{background:rgba(255,255,255,0.08);padding:30px;border-radius:20px;backdrop-filter:blur(10px);text-align:center} input,button{padding:12px;margin:10px;border:none;border-radius:10px} button{background:linear-gradient(45deg,#00ccff,#00ffcc);cursor:pointer;font-weight:bold}
+
+/* SHOP */ #shop{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0b0f1a;z-index:10} .skin{margin:10px;padding:15px;border-radius:15px;background:rgba(255,255,255,0.05)}
 
 /* UI */ #coins{position:fixed;top:10px;right:10px;z-index:5}
 
@@ -16,8 +18,15 @@ canvas{position:fixed;inset:0}/* MENU */ #menu{position:fixed;inset:0;display:fl
  <div class="menu-box">
   <h1>⚡ Stickman Parkour ⚡</h1>
   <input id="name" placeholder="Tu nombre"><br>
-  <button id="play">🎮 Jugar</button>
+  <button onclick="openShop()">🛒 Tienda</button>
+  <button onclick="startGame()">🎮 Jugar</button>
  </div>
+</div><div id="shop">
+ <h2>🛒 Tienda</h2>
+ <div class="skin">🥷 Assassin (negro) <button onclick="setSkin('black')">Usar</button></div>
+ <div class="skin">⚡ Pikachu (amarillo) <button onclick="setSkin('yellow')">Usar</button></div>
+ <div class="skin">🔥 Demon (rojo) <button onclick="setSkin('red')">Usar</button></div>
+ <button onclick="closeShop()">⬅ Volver</button>
 </div><div id="coins">💰 0</div><div id="controls">
  <div class="ctrl" id="left">⬅</div>
  <div class="ctrl" id="jump">⬆</div>
@@ -34,6 +43,7 @@ let playerName="";
 let gameStarted=false;
 let cameraX=0;
 let coins=0;
+let skin="white";
 
 let player={x:100,y:200,dx:0,dy:0,width:20,height:50,jumping:false,frame:0};
 let gravity=0.6;
@@ -41,11 +51,15 @@ let keys={};
 
 let platforms=[{x:0,y:300,width:400,height:20}];
 
-play.onclick=()=>{
+function startGame(){
  playerName=name.value||"Jugador";
  menu.style.display="none";
  gameStarted=true;
 }
+
+function openShop(){menu.style.display="none";shop.style.display="flex"}
+function closeShop(){shop.style.display="none";menu.style.display="flex"}
+function setSkin(color){skin=color}
 
 // CONTROLES MOVIL
 left.ontouchstart=()=>keys.ArrowLeft=true;
@@ -54,6 +68,7 @@ right.ontouchstart=()=>keys.ArrowRight=true;
 right.ontouchend=()=>keys.ArrowRight=false;
 jump.ontouchstart=()=>{if(!player.jumping) player.dy=-12};
 
+// TECLADO
 window.addEventListener("keydown",e=>{
  if(e.code==="ArrowRight") keys.ArrowRight=true;
  if(e.code==="ArrowLeft") keys.ArrowLeft=true;
@@ -88,31 +103,27 @@ function update(){
   }
  }
 
- // monedas
- if(Math.random()<0.01){coins++;document.getElementById("coins").innerText="💰 "+coins}
+ if(Math.random()<0.01){coins++;coinsUI.innerText="💰 "+coins}
 }
 
 function draw(){
  ctx.clearRect(0,0,canvas.width,canvas.height);
 
- // fondo
  let g=ctx.createLinearGradient(0,0,0,canvas.height);
  g.addColorStop(0,"#0f2027");
  g.addColorStop(1,"#203a43");
  ctx.fillStyle=g;
  ctx.fillRect(0,0,canvas.width,canvas.height);
 
- // plataforma
  ctx.fillStyle="#00ffcc";
  for(let p of platforms){ctx.fillRect(p.x-cameraX,p.y,p.width,p.height)}
 
- // stickman suave
  let px=player.x-cameraX;
  let speed=Math.abs(player.dx);
  let swing=Math.sin(player.frame*0.2)*(speed>0.2?10:3);
- let idle=Math.sin(player.frame*0.1)*3;
+ let idle=Math.sin(player.frame*0.1)*5;
 
- ctx.strokeStyle="white";
+ ctx.strokeStyle=skin;
  ctx.lineWidth=3;
 
  // cabeza
@@ -137,7 +148,6 @@ function draw(){
  ctx.lineTo(px+30+swing,player.y+50);
  ctx.stroke();
 
- // nombre
  ctx.fillStyle="white";
  ctx.fillText(playerName,px-20,player.y-20);
 }
