@@ -1,230 +1,203 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stickman Parkour FINAL PRO</title>
-<style>
-body{margin:0;overflow:hidden;font-family:Arial;background:#0b0f1a;color:white}
-canvas{position:fixed;top:0;left:0;z-index:0}
-
-/* MENÚ */
-#menu{
- position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
- background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
- z-index:10;
-}
-.menu-box{
- background:rgba(255,255,255,0.05);
- padding:30px;border-radius:20px;
- backdrop-filter:blur(15px);
- text-align:center;
- box-shadow:0 0 30px rgba(0,255,255,0.3);
-}
-.menu-box h1{font-size:40px;text-shadow:0 0 15px #00ffff}
-
-button{
- padding:12px 20px;margin:10px;border:none;border-radius:12px;
- background:linear-gradient(45deg,#00ccff,#00ffcc);
- cursor:pointer;font-weight:bold;
-}
-
-/* TIENDA */
-#shop{
- position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
- background:#0b0f1a;z-index:10;
-}
-.skin-card{
- background:rgba(255,255,255,0.05);
- margin:10px;padding:15px;border-radius:15px;
- box-shadow:0 0 20px rgba(0,255,255,0.2);
-}
-
-/* UI */
-#ui{
- position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;
- background:radial-gradient(circle,#1a0000,#000);z-index:20;
-}
-
-#progressContainer{
- position:fixed;top:10px;left:50%;transform:translateX(-50%);
- width:70%;height:15px;background:#222;border-radius:20px;overflow:hidden;z-index:5;
-}
-#progressBar{height:100%;width:0%;background:linear-gradient(90deg,#00ffcc,#00aaff)}
-
-</style>
+  <meta charset="UTF-8">
+  <title>Stickman Parkour Controlado</title>
+  <style>
+    body { margin:0; overflow:hidden; background:#111; font-family:Arial; }
+    canvas { display:block; }
+    #ui {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column;
+      background: rgba(0,0,0,0.8); color: white;
+    }
+    button { padding:12px 20px; border:none; border-radius:10px; cursor:pointer; }
+  </style>
 </head>
 <body>
-
-<div id="menu">
- <div class="menu-box">
-  <h1>⚡ Stickman Parkour ⚡</h1>
-  <input id="name" placeholder="Tu nombre"><br>
-  <button id="play">🎮 Jugar</button>
-  <button id="openShop">🛒 Tienda</button>
- </div>
-</div>
-
-<div id="shop">
- <h2>🛒 Tienda</h2>
- <div class="skin-card">🥷 Assassin - 200💰 <button onclick="setSkin('black')">Usar</button></div>
- <div class="skin-card">⚡ Pikachu - 300💰 <button onclick="setSkin('yellow')">Usar</button></div>
- <div class="skin-card">🔥 Demon - 250💰 <button onclick="setSkin('red')">Usar</button></div>
- <button id="back">⬅ Volver</button>
-</div>
-
-<div id="progressContainer"><div id="progressBar"></div></div>
-
 <canvas id="game"></canvas>
-
 <div id="ui">
- <h1 id="endText"></h1>
- <button onclick="location.reload()">Reiniciar</button>
-</div>
+  <h1>💀 GAME OVER 💀</h1>
+  <button onclick="restart()">Reiniciar</button>
+</div><script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
-<script>
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
+let gravity = 0.6;
+let gameOver = false;
 
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-resize();window.addEventListener("resize",resize);
+let keys = {};
 
-let playerName="";
-let skin="white";
-let gameStarted=false;
-let gameOver=false;
-let cameraX=0;
-let finishX=4000;
+let player = {
+  x: 100,
+  y: 0,
+  width: 20,
+  height: 50,
+  dx: 0,
+  dy: 0,
+  speed: 5,
+  jumping: false,
+  grabbing: false,
+  frame: 0
+};
 
-let player={x:100,y:0,width:20,height:50,dx:0,dy:0,jumping:false};
-let platforms=[];
-let obstacles=[];
-let lastX=0;
-let gravity=0.6;
+let platforms = [];
+let obstacles = [];
 
-// BOTONES
-play.onclick=()=>{
- playerName=name.value||"Jugador";
- startGame();
-}
-openShop.onclick=()=>{
- menu.style.display="none";
- shop.style.display="flex";
-}
-back.onclick=()=>{
- shop.style.display="none";
- menu.style.display="flex";
-}
+function generateWorld(xStart) {
+  for (let i = 0; i < 8; i++) {
+    let x = xStart + i * 200;
 
-function setSkin(color){skin=color}
+    // MAPA MÁS LÓGICO (tipo parkour progresivo)
+    let heightOptions = [350, 320, 300, 280];
+    let y = heightOptions[Math.floor(Math.random() * heightOptions.length)];
 
-function startGame(){
- menu.style.display="none";
- gameStarted=true;
- resetGame();
-}
+    platforms.push({x, y, width: 150, height: 20});
 
-function resetGame(){
- platforms=[];obstacles=[];lastX=0;
- generate();
- player.x=100;
- player.y=platforms[0].y-player.height;
- player.dy=0;
- gameOver=false;
-}
-
-function generate(){
- for(let i=0;i<6;i++){
-  let x=lastX+i*180;
-  let y=canvas.height-(150+Math.random()*120);
-  platforms.push({x,y,width:140,height:20});
-  if(Math.random()<0.4) obstacles.push({x:x+70,y:y-30,size:30});
- }
- lastX+=6*180;
-}
-
-function update(){
- if(!gameStarted||gameOver)return;
-
- if(keys.ArrowRight) player.dx+=0.5;
- if(keys.ArrowLeft) player.dx-=0.5;
-
- player.dx*=0.85;
- player.x+=player.dx;
- cameraX=player.x-200;
-
- player.dy+=gravity;
- player.y+=player.dy;
-
- player.jumping=true;
- for(let p of platforms){
-  if(player.x<p.x+p.width&&player.x+player.width>p.x&&player.y+player.height<p.y+10&&player.y+player.height+player.dy>=p.y){
-   player.y=p.y-player.height;
-   player.dy=0;player.jumping=false;
+    // obstáculo solo si hay espacio
+    if (Math.random() < 0.4) {
+      obstacles.push({x: x + 80, y: y - 30, size: 30});
+    }
   }
- }
-
- for(let o of obstacles){
-  if(player.x<o.x+o.size&&player.x+player.width>o.x&&player.y<o.y+o.size&&player.y+player.height>o.y){endGame(false)}
- }
-
- if(player.y>canvas.height) endGame(false);
- if(player.x>lastX-400) generate();
- if(player.x>=finishX) endGame(true);
-
- let p=Math.min(player.x/finishX,1);
- progressBar.style.width=(p*100)+"%";
 }
 
-function draw(){
- // fondo
- let g=ctx.createLinearGradient(0,0,0,canvas.height);
- g.addColorStop(0,"#0f2027");
- g.addColorStop(1,"#203a43");
- ctx.fillStyle=g;
- ctx.fillRect(0,0,canvas.width,canvas.height);
+generateWorld(0);
+player.y = platforms[0].y - player.height;
 
- // plataformas
- for(let p of platforms){
-  ctx.fillStyle="#00ffcc";
-  ctx.fillRect(p.x-cameraX,p.y,p.width,p.height);
- }
+function drawStickman(p) {
+  ctx.strokeStyle = p.grabbing ? "yellow" : "white";
+  ctx.lineWidth = 2;
 
- // obstáculos
- for(let o of obstacles){
-  ctx.fillStyle="red";
-  ctx.fillRect(o.x-cameraX,o.y,o.size,o.size);
- }
+  let swing = Math.sin(p.frame * 0.3) * 10;
 
- // jugador estilizado
- let px=player.x-cameraX;
- ctx.strokeStyle=skin;
- ctx.lineWidth=3;
- ctx.beginPath();ctx.arc(px+10,player.y-10,10,0,Math.PI*2);ctx.stroke();
- ctx.beginPath();ctx.moveTo(px+10,player.y);ctx.lineTo(px+10,player.y+25);ctx.stroke();
- ctx.fillText(playerName,px-20,player.y-20);
+  ctx.beginPath();
+  ctx.arc(p.x + 10, p.y - 10, 10, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(p.x + 10, p.y);
+  ctx.lineTo(p.x + 10, p.y + 25);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(p.x + 10, p.y + 10);
+  ctx.lineTo(p.x - 5 + swing, p.y + 20);
+  ctx.moveTo(p.x + 10, p.y + 10);
+  ctx.lineTo(p.x + 25 - swing, p.y + 20);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(p.x + 10, p.y + 25);
+  ctx.lineTo(p.x - 5 - swing, p.y + 45);
+  ctx.moveTo(p.x + 10, p.y + 25);
+  ctx.lineTo(p.x + 25 + swing, p.y + 45);
+  ctx.stroke();
+
+  ctx.fillStyle = "white";
+  ctx.fillText("pinto vrg", p.x - 20, p.y - 30);
 }
 
-function loop(){update();draw();requestAnimationFrame(loop)}
+function update() {
+  if (gameOver) return;
 
-function endGame(win){
- gameOver=true;
- endText.innerText=win?"🏆 GANASTE":"💀 PERDISTE";
- ui.style.display="flex";
+  player.frame++;
+
+  // movimiento manual
+  if (keys["ArrowRight"]) player.dx = player.speed;
+  else if (keys["ArrowLeft"]) player.dx = -player.speed;
+  else player.dx = 0;
+
+  player.x += player.dx;
+
+  // gravedad
+  player.dy += gravity;
+  player.y += player.dy;
+
+  player.jumping = true;
+  player.grabbing = false;
+
+  for (let plat of platforms) {
+    // colisión arriba
+    if (
+      player.x < plat.x + plat.width &&
+      player.x + player.width > plat.x &&
+      player.y + player.height < plat.y + 10 &&
+      player.y + player.height + player.dy >= plat.y
+    ) {
+      player.y = plat.y - player.height;
+      player.dy = 0;
+      player.jumping = false;
+    }
+
+    // agarrarse borde
+    if (
+      player.x + player.width > plat.x &&
+      player.x < plat.x &&
+      player.y + player.height > plat.y &&
+      player.y < plat.y
+    ) {
+      player.grabbing = true;
+      player.dy = 0;
+      player.y = plat.y - player.height;
+    }
+  }
+
+  for (let obs of obstacles) {
+    if (
+      player.x < obs.x + obs.size &&
+      player.x + player.width > obs.x &&
+      player.y < obs.y + obs.size &&
+      player.y + player.height > obs.y
+    ) {
+      endGame();
+    }
+  }
+
+  if (player.y > canvas.height) endGame();
+
+  if (player.x > platforms[platforms.length - 1].x - 400) {
+    generateWorld(platforms.length * 200);
+  }
 }
 
-let keys={};
-window.addEventListener("keydown",e=>{
- if(e.code==="ArrowRight") keys.ArrowRight=true;
- if(e.code==="ArrowLeft") keys.ArrowLeft=true;
- if(e.code==="Space"&&!player.jumping) player.dy=-12;
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle = "#0f0";
+  for (let plat of platforms) {
+    ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+  }
+
+  ctx.fillStyle = "red";
+  for (let obs of obstacles) {
+    ctx.fillRect(obs.x, obs.y, obs.size, obs.size);
+  }
+
+  drawStickman(player);
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function endGame() {
+  gameOver = true;
+  document.getElementById("ui").style.display = "flex";
+}
+
+function restart() { location.reload(); }
+
+window.addEventListener("keydown", e => {
+  keys[e.code] = true;
+  if (e.code === "Space" && !player.jumping) player.dy = -12;
 });
-window.addEventListener("keyup",e=>{
- if(e.code==="ArrowRight") keys.ArrowRight=false;
- if(e.code==="ArrowLeft") keys.ArrowLeft=false;
+
+window.addEventListener("keyup", e => {
+  keys[e.code] = false;
 });
 
 loop();
-</script>
-</body>
+</script></body>
 </html>
