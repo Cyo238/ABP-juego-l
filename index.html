@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stickman Parkour PRO</title>
+<title>Pinto Goldo</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,27 +13,27 @@
   <div class="menu-box">
     <h1>⚡ Stickman Parkour ⚡</h1>
     <input id="name" placeholder="Tu nombre"><br>
-    <button onclick="startGame()">🎮 Jugar</button>
-    <button onclick="openShop()">🛒 Tienda</button>
+    <button id="btnPlay">🎮 Jugar</button>
+    <button id="btnShop">🛒 Tienda</button>
   </div>
 </div>
 
 <!-- TIENDA -->
 <div id="shop">
   <h2>🛒 Tienda</h2>
-  <div class="skin">🥷 Assassin <button onclick="setSkin('assassin')">Usar</button></div>
-  <div class="skin">⚡ Pikachu <button onclick="setSkin('pikachu')">Usar</button></div>
-  <div class="skin">🔥 Demon <button onclick="setSkin('demon')">Usar</button></div>
-  <button onclick="closeShop()">⬅ Volver</button>
+  <div class="skin">🥷 Assassin <button class="useSkin" data-skin="assassin">Usar</button></div>
+  <div class="skin">⚡ Pikachu <button class="useSkin" data-skin="pikachu">Usar</button></div>
+  <div class="skin">🔥 Demon <button class="useSkin" data-skin="demon">Usar</button></div>
+  <button id="backMenu">⬅ Volver</button>
 </div>
 
 <div id="coins">💰 0</div>
 
-<!-- CONTROLES MÓVIL -->
+<!-- CONTROLES -->
 <div id="controls">
-  <div class="ctrl" id="left">⬅</div>
-  <div class="ctrl" id="jump">⬆</div>
-  <div class="ctrl" id="right">➡</div>
+  <div class="ctrl" id="left"><</div>
+  <div class="ctrl" id="jump">∆</div>
+  <div class="ctrl" id="right">></div>
 </div>
 
 <canvas id="game"></canvas>
