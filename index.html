@@ -1,148 +1,43 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stickman Parkour MOBILE FIX</title>
-<style>
-body{margin:0;overflow:hidden;background:#0b0f1a;font-family:Arial;color:white}
-canvas{position:fixed;inset:0}#menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#111;z-index:10} .menu-box{text-align:center} button,input{padding:10px;margin:10px}
-
-#controls{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:20px;z-index:5} .ctrl{width:70px;height:70px;border-radius:50%;background:#ffffff22;display:flex;align-items:center;justify-content:center;font-size:24px} </style>
-
+<title>Stickman Parkour PRO</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body><div id="menu">
- <div class="menu-box">
-  <h1>Stickman</h1>
-  <input id="name" placeholder="Nombre"><br>
-  <button onclick="startGame()">Jugar</button>
- </div>
-</div><div id="controls">
- <div class="ctrl" id="left">⬅</div>
- <div class="ctrl" id="jump">⬆</div>
- <div class="ctrl" id="right">➡</div>
-</div><canvas id="game"></canvas>
+<body>
 
-<script>
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
+<!-- MENÚ -->
+<div id="menu">
+  <div class="menu-box">
+    <h1>⚡ Stickman Parkour ⚡</h1>
+    <input id="name" placeholder="Tu nombre"><br>
+    <button onclick="startGame()">🎮 Jugar</button>
+    <button onclick="openShop()">🛒 Tienda</button>
+  </div>
+</div>
 
-function resize(){
- canvas.width=window.innerWidth;
- canvas.height=window.innerHeight;
-}
-resize();
-window.addEventListener("resize",resize);
-window.addEventListener("orientationchange",()=>{
- setTimeout(resize,200);
-});
+<!-- TIENDA -->
+<div id="shop">
+  <h2>🛒 Tienda</h2>
+  <div class="skin">🥷 Assassin <button onclick="setSkin('assassin')">Usar</button></div>
+  <div class="skin">⚡ Pikachu <button onclick="setSkin('pikachu')">Usar</button></div>
+  <div class="skin">🔥 Demon <button onclick="setSkin('demon')">Usar</button></div>
+  <button onclick="closeShop()">⬅ Volver</button>
+</div>
 
-let player={x:100,y:200,dx:0,dy:0,width:20,height:50,jumping:false,frame:0};
-let gravity=0.6;
-let keys={};
-let gameStarted=false;
-let cameraX=0;
-let playerName="";
+<div id="coins">💰 0</div>
 
-let platforms=[{x:0,y:300,width:500,height:20}];
+<!-- CONTROLES MÓVIL -->
+<div id="controls">
+  <div class="ctrl" id="left">⬅</div>
+  <div class="ctrl" id="jump">⬆</div>
+  <div class="ctrl" id="right">➡</div>
+</div>
 
-function startGame(){
- playerName=name.value||"Jugador";
- menu.style.display="none";
- gameStarted=true;
-}
+<canvas id="game"></canvas>
 
-// CONTROLES MÓVIL MEJORADOS
-function press(key){keys[key]=true}
-function release(key){keys[key]=false}
-
-left.addEventListener("touchstart",()=>press("ArrowLeft"));
-left.addEventListener("touchend",()=>release("ArrowLeft"));
-right.addEventListener("touchstart",()=>press("ArrowRight"));
-right.addEventListener("touchend",()=>release("ArrowRight"));
-jump.addEventListener("touchstart",()=>{if(!player.jumping) player.dy=-12});
-
-// PC
-window.addEventListener("keydown",e=>{
- if(e.code==="ArrowRight") press("ArrowRight");
- if(e.code==="ArrowLeft") press("ArrowLeft");
- if(e.code==="Space"&&!player.jumping) player.dy=-12;
-});
-window.addEventListener("keyup",e=>{
- if(e.code==="ArrowRight") release("ArrowRight");
- if(e.code==="ArrowLeft") release("ArrowLeft");
-});
-
-function update(){
- if(!gameStarted) return;
-
- player.frame++;
-
- if(keys.ArrowRight) player.dx+=0.4;
- if(keys.ArrowLeft) player.dx-=0.4;
-
- player.dx*=0.85;
- player.x+=player.dx;
- cameraX=player.x-200;
-
- player.dy+=gravity;
- player.y+=player.dy;
-
- player.jumping=true;
- for(let p of platforms){
-  if(player.x<p.x+p.width&&player.x+player.width>p.x&&player.y+player.height<p.y+10&&player.y+player.height+player.dy>=p.y){
-   player.y=p.y-player.height;
-   player.dy=0;
-   player.jumping=false;
-  }
- }
-}
-
-function draw(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
-
- ctx.fillStyle="#0f2027";
- ctx.fillRect(0,0,canvas.width,canvas.height);
-
- ctx.fillStyle="#00ffcc";
- for(let p of platforms){ctx.fillRect(p.x-cameraX,p.y,p.width,p.height)}
-
- let px=player.x-cameraX;
- let speed=Math.abs(player.dx);
-
- // SI ESTÁ QUIETO → BAILE
- let idleOffset = speed < 0.1 ? Math.sin(player.frame*0.2)*8 : 0;
- let swing = speed > 0.2 ? Math.sin(player.frame*0.3)*10 : Math.sin(player.frame*0.2)*5;
-
- ctx.strokeStyle="white";
- ctx.lineWidth=3;
-
- // cabeza
- ctx.beginPath();ctx.arc(px+10,player.y-10+idleOffset,10,0,Math.PI*2);ctx.stroke();
-
- // cuerpo
- ctx.beginPath();ctx.moveTo(px+10,player.y);ctx.lineTo(px+10,player.y+25);ctx.stroke();
-
- // brazos
- ctx.beginPath();
- ctx.moveTo(px+10,player.y+10);
- ctx.lineTo(px-10+swing,player.y+20);
- ctx.moveTo(px+10,player.y+10);
- ctx.lineTo(px+30-swing,player.y+20);
- ctx.stroke();
-
- // piernas
- ctx.beginPath();
- ctx.moveTo(px+10,player.y+25);
- ctx.lineTo(px-10-swing,player.y+50);
- ctx.moveTo(px+10,player.y+25);
- ctx.lineTo(px+30+swing,player.y+50);
- ctx.stroke();
-
- ctx.fillStyle="white";
- ctx.fillText(playerName,px-20,player.y-20);
-}
-
-function loop(){update();draw();requestAnimationFrame(loop)}
-loop();
-</script></body>
+<script src="game.js"></script>
+</body>
 </html>
