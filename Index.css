@@ -9,24 +9,29 @@ body{
 canvas{
  position:fixed;
  inset:0;
+ z-index:1;
 }
 
 /* MENU */
-#menu{
+#menu, #shop{
  position:fixed;
  inset:0;
  display:flex;
  align-items:center;
  justify-content:center;
+ flex-direction:column;
  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
  z-index:10;
 }
 
+#shop{
+ display:none;
+}
+
 .menu-box{
- background:rgba(255,255,255,0.08);
+ background:#ffffff11;
  padding:30px;
  border-radius:20px;
- backdrop-filter:blur(10px);
  text-align:center;
 }
 
@@ -39,27 +44,15 @@ button,input{
 
 button{
  background:linear-gradient(45deg,#00ccff,#00ffcc);
- font-weight:bold;
  cursor:pointer;
 }
 
 /* TIENDA */
-#shop{
- position:fixed;
- inset:0;
- display:none;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- background:#0b0f1a;
- z-index:10;
-}
-
 .skin{
  margin:10px;
- padding:15px;
+ padding:10px;
  background:#ffffff11;
- border-radius:15px;
+ border-radius:10px;
 }
 
 /* MONEDAS */
